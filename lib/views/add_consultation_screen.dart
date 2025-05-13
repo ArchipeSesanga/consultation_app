@@ -39,7 +39,35 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
       context: context,
       initialTime: _selectedTime,
     );
-    if (picked != null) setState(() => _selectedTime = picked);
+
+    if (picked != null) {
+      final now = DateTime.now();
+
+      // Combine selected date and picked time
+      final selectedDateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        picked.hour,
+        picked.minute,
+      );
+
+      if (_selectedDate.day == now.day &&
+          _selectedDate.month == now.month &&
+          _selectedDate.year == now.year &&
+          selectedDateTime.isBefore(now)) {
+        // Show warning if selected time is in the past
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select a future time.'),
+            backgroundColor: Colors.redAccent,
+          ), // Show a warning if the selected time is in the past
+        );
+        return;
+      }
+
+      setState(() => _selectedTime = picked);
+    }
   }
 
   @override
@@ -105,26 +133,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                // Description Text Field
-                TextFormField(
-                  controller: _descController,
-                  decoration: InputDecoration(
-                    labelText: 'Consultation Description',
-                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 16,
-                    ),
-                  ),
-                  validator:
-                      (value) => value?.isEmpty ?? true ? 'Description is required' : null,
-                  maxLines: 3,
-                  style: const TextStyle(fontSize: 16),
-                ),
+
                 const SizedBox(height: 20),
                 // Topic Text Field
                 TextFormField(
@@ -140,10 +149,41 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                       vertical: 16,
                     ),
                   ),
-                  validator:
-                      (value) => value?.isEmpty ?? true ? 'Topic is required' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Topic is required';
+                    } else if (value.length < 20) {
+                      return 'Topic must be at least 20 characters';
+                    }
+                    return null;
+                  },
                   style: const TextStyle(fontSize: 16),
                 ),
+
+                const SizedBox(height: 20),
+                // Description Text Field
+                TextFormField(
+                  controller: _descController,
+                  decoration: InputDecoration(
+                    labelText: 'Additional Notes',
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 16,
+                    ),
+                  ),
+                  validator:
+                      (value) =>
+                          value?.isEmpty ?? true
+                              ? 'Description is required'
+                              : null,
+                  maxLines: 3,
+                  style: const TextStyle(fontSize: 16),
+                ),
+
                 const SizedBox(height: 30),
                 // Save Button
                 Center(
@@ -166,8 +206,10 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                         );
 
                         // Save the consultation information using the view model
-                        await Provider.of<ConsultationViewModel>(context, listen: false)
-                            .addConsultation(consultation);
+                        await Provider.of<ConsultationViewModel>(
+                          context,
+                          listen: false,
+                        ).addConsultation(consultation);
 
                         // Show a success snack bar
                         ScaffoldMessenger.of(context).showSnackBar(
