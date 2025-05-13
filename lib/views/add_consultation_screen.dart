@@ -3,6 +3,7 @@ Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/consultation.dart';
@@ -22,6 +23,14 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   bool _disabled = true; //button disabled by default
+  final List<String> _lecturers = [
+    'Mr. L. Grobblaar',
+    'Mr. Murrithi',
+    'Dr. N. Mabanza',
+    'Mr. A. Akanbi',
+    'Mrs. M. Mbele',
+  ];
+  String? _selectedLecturer;
 
   // Select Date
   Future<void> _selectDate(BuildContext context) async {
@@ -84,6 +93,38 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //Select a Lecturer
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Select Lecturer',
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 16,
+                    ),
+                  ),
+                  value: _selectedLecturer,
+                  items:
+                      _lecturers.map((lecturer) {
+                        return DropdownMenuItem<String>(
+                          value: lecturer,
+                          child: Text(lecturer),
+                        );
+                      }).toList(),
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty
+                              ? 'Please select a lecturer'
+                              : null,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedLecturer = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 20),
 
                 // Date Picker
                 InkWell(
@@ -212,6 +253,10 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                                     final description = _descController.text;
                                     final topic = _topicController.text;
 
+                                    final user =
+                                        FirebaseAuth.instance.currentUser;
+                                    final studentId = user?.uid ?? 'unknown';
+
                                     final consultation = Consultation(
                                       id:
                                           DateTime.now().millisecondsSinceEpoch
@@ -222,6 +267,10 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                                       time: _selectedTime.format(context),
                                       description: description,
                                       topic: topic,
+                                      lecturer:
+                                          _selectedLecturer ??
+                                          '', // Ensure this is not null
+                                      studentId: studentId,
                                     );
 
                                     // Save the consultation information using the view model
