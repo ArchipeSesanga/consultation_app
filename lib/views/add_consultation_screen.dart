@@ -21,6 +21,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   final _topicController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
+  bool _disabled = true; //button disabled by default
 
   // Select Date
   Future<void> _selectDate(BuildContext context) async {
@@ -82,6 +83,8 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //Select a Lecturer
+
                 // Date Picker
                 InkWell(
                   onTap: () => _selectDate(context),
@@ -138,6 +141,9 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                 // Topic Text Field
                 TextFormField(
                   controller: _topicController,
+                  onChanged: (text) {
+                    _SetDisabled();
+                  },
                   decoration: InputDecoration(
                     labelText: 'Consultation Topic',
                     labelStyle: const TextStyle(fontWeight: FontWeight.bold),
@@ -149,10 +155,10 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                       vertical: 16,
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
+                  validator: (text) {
+                    if (text == null || text.isEmpty) {
                       return 'Topic is required';
-                    } else if (value.length < 20) {
+                    } else if (text.length < 20) {
                       return 'Topic must be at least 20 characters';
                     }
                     return null;
@@ -185,62 +191,81 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                 ),
 
                 const SizedBox(height: 30),
+
                 // Save Button
                 Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      print("Button pressed");
+                  child: IgnorePointer(
+                    ignoring: _disabled,
+                    child: Opacity(
+                      opacity:
+                          _disabled ? 0.5 : 1.0, //Dim the button when disabled
+                      child: ElevatedButton(
+                        onPressed:
+                            _disabled
+                                ? null
+                                : () async {
+                                  print("Button pressed");
 
-                      if (_formKey.currentState!.validate()) {
-                        print('Form is valid');
+                                  if (_formKey.currentState!.validate()) {
+                                    print('Form is valid');
 
-                        final description = _descController.text;
-                        final topic = _topicController.text;
+                                    final description = _descController.text;
+                                    final topic = _topicController.text;
 
-                        final consultation = Consultation(
-                          id: DateTime.now().millisecondsSinceEpoch.toString(),
-                          date: DateFormat('yyyy-MM-dd').format(_selectedDate),
-                          time: _selectedTime.format(context),
-                          description: description,
-                          topic: topic,
-                        );
+                                    final consultation = Consultation(
+                                      id:
+                                          DateTime.now().millisecondsSinceEpoch
+                                              .toString(),
+                                      date: DateFormat(
+                                        'yyyy-MM-dd',
+                                      ).format(_selectedDate),
+                                      time: _selectedTime.format(context),
+                                      description: description,
+                                      topic: topic,
+                                    );
 
-                        // Save the consultation information using the view model
-                        await Provider.of<ConsultationViewModel>(
-                          context,
-                          listen: false,
-                        ).addConsultation(consultation);
+                                    // Save the consultation information using the view model
+                                    await Provider.of<ConsultationViewModel>(
+                                      context,
+                                      listen: false,
+                                    ).addConsultation(consultation);
 
-                        // Show a success snack bar
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Consultation added successfully!'),
+                                    // Show a success snack bar
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Consultation added successfully!',
+                                        ),
+                                      ),
+                                    );
+
+                                    // Navigate back to the previous screen
+                                    Navigator.pop(context);
+                                  } else {
+                                    print('Form is not valid');
+                                  }
+                                },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 16,
+                          ), // Increased padding
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              12,
+                            ), // Rounded corners
                           ),
-                        );
-
-                        // Navigate back to the previous screen
-                        Navigator.pop(context);
-                      } else {
-                        print('Form is not valid');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 16,
-                      ), // Increased padding
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          12,
-                        ), // Rounded corners
-                      ),
-                      elevation: 5, // Subtle shadow effect
-                    ),
-                    child: const Text(
-                      'Save Consultation',
-                      style: TextStyle(
-                        fontSize: 18, // Larger text size for better readability
-                        fontWeight: FontWeight.bold, // Bold text for emphasis
+                          elevation: 5, // Subtle shadow effect
+                        ),
+                        child: const Text(
+                          'Save Consultation',
+                          style: TextStyle(
+                            fontSize:
+                                18, // Larger text size for better readability
+                            fontWeight:
+                                FontWeight.bold, // Bold text for emphasis
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -258,5 +283,17 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
     _descController.dispose();
     _topicController.dispose();
     super.dispose();
+  }
+
+  void _SetDisabled() {
+    if (_topicController.text.isNotEmpty) {
+      setState(() {
+        _disabled = false; // Enable the button
+      });
+    } else {
+      setState(() {
+        _disabled = true; // Disable the button
+      });
+    }
   }
 }
