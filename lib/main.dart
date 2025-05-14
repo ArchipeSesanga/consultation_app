@@ -1,7 +1,6 @@
-/*
-Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075 
-Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
-
+ /*
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
+Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:assignement_1_2025/viewmodels/auth_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'routes/route_manager.dart';
 import 'viewmodels/consultation_view_model.dart';
-import 'viewmodels/profile_view_model.dart';
+import 'viewmodels/profile_view_model.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

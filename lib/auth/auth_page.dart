@@ -1,4 +1,6 @@
-
+ /*
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
+Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 import 'package:assignement_1_2025/routes/route_manager.dart';
 import 'package:assignement_1_2025/services/auth_service.dart';
 
@@ -76,7 +78,7 @@ class _AuthPageState extends State<AuthPage> {
           arguments: _emailController.text.trim(),
         );
       } else {
-        await authService.CreateUserWithEmailAndPassword(
+        await authService.createUserWithEmailAndPassword(
           _emailController.text.trim(),
           _passwordController.text.trim(),
           _nameController.text.trim(),

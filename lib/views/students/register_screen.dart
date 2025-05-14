@@ -1,3 +1,6 @@
+ /*
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
+Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
@@ -137,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ? () async {
             if (_formKey.currentState!.validate()) {
               try {
-                final user = await _auth.CreateUserWithEmailAndPassword(
+                final user = await _auth.createUserWithEmailAndPassword(
                   _emailController.text.trim(),
                   _passwordController.text.trim(),
                   _studentIdController.text.trim(),
