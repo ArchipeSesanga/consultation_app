@@ -10,12 +10,12 @@ class EmailFormField extends StatelessWidget {
       controller: controller,
       keyboardType: TextInputType.emailAddress,
       decoration: const InputDecoration(
-        labelText: 'CUT Email',
-        prefixIcon: Icon(Icons.email),
+        labelText: 'Email',
+      
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Email is required';
-        if (!value.endsWith('@cut.ac.za')) return 'Only CUT emails allowed';
+        
         return null;
       },
     );
