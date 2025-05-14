@@ -1,3 +1,4 @@
+import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 
@@ -16,12 +17,14 @@ class StudentRegistrationScreen extends StatefulWidget {
     this.initialContact,
     required this.onSubmit,
   });
+  
 
   @override
   State<StudentRegistrationScreen> createState() => _StudentRegistrationScreenState();
 }
 
 class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
+  final  _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _studentIdController = TextEditingController();
   final _emailController = TextEditingController();
@@ -124,22 +127,39 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                   validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: isFormValid
-                      ? () {
-                          if (_formKey.currentState!.validate()) {
-                            widget.onSubmit(
-                              _studentIdController.text.trim(),
-                              _emailController.text.trim(),
-                              _passwordController.text.trim(),
-                              _contactController.text.trim(),
-                            );
-                            Navigator.pop(context);
-                          }
-                        }
-                      : null,
-                  child: Text(widget.studentId == null ? 'Register Student' : 'Update Student'),
-                ),
+  ElevatedButton(
+    onPressed: isFormValid
+        ? () async {
+            if (_formKey.currentState!.validate()) {
+              try {
+                final user = await _auth.CreateUserWithEmailAndPassword(
+                  _emailController.text.trim(),
+                  _passwordController.text.trim(),
+                );
+
+                if (user != null) {
+                  widget.onSubmit(
+                    _studentIdController.text.trim(),
+                    _emailController.text.trim(),
+                    _passwordController.text.trim(),
+                    _contactController.text.trim(),
+                  );
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('User registration failed.')),
+                  );
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: ${e.toString()}')),
+                );
+              }
+            }
+          }
+        : null,
+    child: Text(widget.studentId == null ? 'Register' : 'Update'),
+  ),
               ],
             ),
           ),
@@ -148,3 +168,9 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
     );
   }
 }
+  
+          
+              
+              
+              
+      

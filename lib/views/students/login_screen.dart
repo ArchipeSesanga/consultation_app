@@ -1,4 +1,6 @@
+import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:assignement_1_2025/viewmodels/auth_view_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +13,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -111,14 +114,37 @@ class _LoginViewState extends State<LoginView> {
               ),
               const SizedBox(height: 10),
               TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/studentRegistrationScreen',
-                  ); // Make sure this route exists
-                },
-                child: const Text("Don't have an account? Register"),
+               onPressed: () async {
+  if (!_formKey.currentState!.validate()) return;
+
+  await _saveRememberMe(rememberMe);
+
+  try {
+    final user = await auth.logUserWithEmailAndPassword(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
+
+    if (user != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login successful')),
+      );
+      Navigator.pushReplacementNamed(context, '/HomePage');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login failed')),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: ${e.toString()}')),
+    );
+  }
+               },
+
+                child: const Text("Don\'t have an account? Register"),
               ),
+              
             ],
           ),
         ),
