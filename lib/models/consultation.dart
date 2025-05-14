@@ -1,10 +1,7 @@
+
 /*
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075 
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
-import 'package:assignement_1_2025/models/lecturer.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Consultation {
   final String id;
   final DateTime date;

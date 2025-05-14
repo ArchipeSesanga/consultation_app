@@ -1,4 +1,7 @@
-//import 'package:cloud_firestore/cloud_firestore.dart';
+ /*
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
+Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
+
 
 class Student {
   final String id;
@@ -17,27 +20,5 @@ class Student {
     required this.createdAt,
   });
 
-  // Factory constructor to create a Student instance from a Firestore document
- // factory Student.fromFirestore(DocumentSnapshot doc) {
- //   Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-   // return Student(
-    //  id: doc.id,
-     // studentId: data['studentId'],
-      //email: data['email'],
-      //password: data['password'],
-     // contactNumber: data['contactNumber'],
-     // createdAt: (data['createdAt'] as Timestamp).toDate(),
-   // );
- // }
-
-  // Convert a Student instance to a Firestore-friendly Map
- // Map<String, dynamic> toFirestore() {
-   // return {
-    //  'studentId': studentId,
-     // 'email': email,
-     // 'password': password,
-     // 'contactNumber': contactNumber,
-     // 'createdAt': createdAt,
-   // };
- // }
+ 
 }

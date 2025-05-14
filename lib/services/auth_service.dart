@@ -1,4 +1,7 @@
-//import 'package:assignement_1_2025/services/firestore_service.dart';
+ /*
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
+Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -10,7 +13,7 @@ class AuthService {
   // Register user
   Future<User?> createUserWithEmailAndPassword(
     String email,
-    String password,
+    String password, String trim,
   ) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
