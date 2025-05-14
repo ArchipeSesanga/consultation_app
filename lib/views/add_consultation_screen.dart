@@ -2,6 +2,7 @@
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075 
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
 
+import 'package:assignement_1_2025/models/lecturer.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -23,14 +24,40 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   bool _disabled = true; //button disabled by default
-  final List<String> _lecturers = [
-    'Mr. L. Grobblaar',
-    'Mr. Murrithi',
-    'Dr. N. Mabanza',
-    'Mr. A. Akanbi',
-    'Mrs. M. Mbele',
+  final List<Lecturer> _lecturers = [
+    Lecturer(
+      id: '1',
+      name: 'Mr. L. Grobblaar',
+      email: 'grobblaar@cut.ac.za',
+      module: 'Software Development',
+    ),
+    Lecturer(
+      id: '2',
+      name: 'Mr Murrithi',
+      email: 'murrithi@cut.ac.za',
+      module: 'Technical Programming',
+    ),
+    Lecturer(
+      id: '3',
+      name: 'Ms. MJ. Mbele',
+      email: 'mmbele@cut.ac.za',
+      module: 'Technical Programming',
+    ),
+    Lecturer(
+      id: '4',
+      name: 'Dr. N. Mabanza',
+      email: 'mabanza@cut.ac.za',
+      module: 'Communication Networks',
+    ),
+    Lecturer(
+      id: '5',
+      name: 'Mr.A. Akanbi',
+      email: 'aakanbi@cut.ac.za',
+      module: 'Software Engineering',
+    ),
   ];
-  String? _selectedLecturer;
+
+  Lecturer? _selectedLecturer;
 
   // Select Date
   Future<void> _selectDate(BuildContext context) async {
@@ -93,7 +120,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //Select a Lecturer
-                DropdownButtonFormField<String>(
+                DropdownButtonFormField<Lecturer>(
                   decoration: InputDecoration(
                     labelText: 'Select Lecturer',
                     labelStyle: const TextStyle(fontWeight: FontWeight.bold),
@@ -108,21 +135,17 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                   value: _selectedLecturer,
                   items:
                       _lecturers.map((lecturer) {
-                        return DropdownMenuItem<String>(
+                        return DropdownMenuItem<Lecturer>(
                           value: lecturer,
-                          child: Text(lecturer),
+                          child: Text('${lecturer.module} - ${lecturer.name}'),
                         );
                       }).toList(),
+                  onChanged: (value) {
+                    setState(() => _selectedLecturer = value);
+                  },
                   validator:
                       (value) =>
-                          value == null || value.isEmpty
-                              ? 'Please select a lecturer'
-                              : null,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedLecturer = value;
-                    });
-                  },
+                          value == null ? 'Please select a lecturer' : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -253,6 +276,14 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                                     final description = _descController.text;
                                     final topic = _topicController.text;
 
+                                    final selectedDateTime = DateTime(
+                                      _selectedDate.year,
+                                      _selectedDate.month,
+                                      _selectedDate.day,
+                                      _selectedTime.hour,
+                                      _selectedTime.minute,
+                                    );
+
                                     final user =
                                         FirebaseAuth.instance.currentUser;
                                     final studentId = user?.uid ?? 'unknown';
@@ -261,15 +292,10 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                                       id:
                                           DateTime.now().millisecondsSinceEpoch
                                               .toString(),
-                                      date: DateFormat(
-                                        'yyyy-MM-dd',
-                                      ).format(_selectedDate),
-                                      time: _selectedTime.format(context),
+                                      dateTime: selectedDateTime,
                                       description: description,
                                       topic: topic,
-                                      lecturer:
-                                          _selectedLecturer ??
-                                          '', // Ensure this is not null
+                                      lecturer: _selectedLecturer!,
                                       studentId: studentId,
                                     );
 

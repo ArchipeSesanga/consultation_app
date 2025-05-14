@@ -1,12 +1,14 @@
 /*
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075 
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
+import 'package:assignement_1_2025/models/lecturer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Consultation {
   final String id;
   final String studentId; // Who submitted it
-  final String lecturer; // Change to Lecturer type
-  final String date; // Change to DateTime
-  final String time; // Change to TimeOfDay
+  final Lecturer lecturer; // Change to Lecturer type
+  final DateTime dateTime; // combined date and time
   final String topic;
   final String description;
 
@@ -14,8 +16,7 @@ class Consultation {
     required this.id,
     required this.studentId,
     required this.lecturer,
-    required this.date,
-    required this.time,
+    required this.dateTime,
     required this.topic,
     required this.description,
   });
@@ -24,9 +25,8 @@ class Consultation {
     return {
       'id': id,
       'studentId': studentId,
-      'lecture': lecturer,
-      'date': date, // Convert DateTime to string for storage
-      'time': time, // Convert TimeOfDay to string for storage
+      'lecturer': lecturer.toMap(),
+      'dateTime': dateTime, //firebase will automatically convert to timestamp
       'topic': topic,
       'description': description,
     };
@@ -36,9 +36,8 @@ class Consultation {
     return Consultation(
       id: map['id'],
       studentId: map['studentId'],
-      lecturer: map['lecture'],
-      date: map['date'], // Convert string back to DateTime
-      time: map['time'], // Convert string back to TimeOfDay
+      lecturer: Lecturer.fromMap(map['lecturer']),
+      dateTime: (map['dateTime'] as Timestamp).toDate(),
       topic: map['topic'],
       description: map['description'],
     );

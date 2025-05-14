@@ -32,6 +32,7 @@ class ConsultationViewModel with ChangeNotifier {
         await _firestore
             .collection('consultations')
             .where('studentId', isEqualTo: studentId)
+            .orderBy('dateTime')
             .get();
 
     _consultations.clear(); // Clear existing consultations
