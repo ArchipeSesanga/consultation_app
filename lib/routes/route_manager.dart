@@ -7,14 +7,14 @@ import '../views/add_consultation_screen.dart';
 import '../views/consultation_details_screen.dart';
 import '../views/home_screen.dart';
 import '../views/profile_page_screen.dart';
-import '../views/student_registration_screen.dart'; // <-- add this
+import '../views/student_registration_screen.dart'; 
 
 class RouteManager {
   static const String homeScreen = '/';
   static const String addConsultationScreen = '/addConsultation';
   static const String consultationDetailsScreen = '/consultationDetails';
   static const String profileScreen = '/profile';
-  static const String registrationScreen = '/register'; // <-- add this
+  static const String registrationScreen = '/register'; 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -30,7 +30,9 @@ class RouteManager {
       case profileScreen:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
       case registrationScreen:
-        return MaterialPageRoute(builder: (_) => const StudentRegistrationScreen());
+        return MaterialPageRoute(builder: (_) => StudentRegistrationScreen(onSubmit: 
+        (String studentId, String email, 
+        String password, String contact) {  },));
       default:
         throw const FormatException('Route not found!');
     }
