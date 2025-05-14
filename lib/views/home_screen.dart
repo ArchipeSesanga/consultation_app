@@ -9,15 +9,16 @@ import '../viewmodels/consultation_view_model.dart';
 import '../viewmodels/profile_view_model.dart'; // Import profile ViewModel
 
 class HomeScreen extends StatelessWidget {
-   final String email; // User's email passed from the login page
+  final String email; // User's email passed from the login page
   const HomeScreen({super.key, required this.email});
-  
 
   @override
   Widget build(BuildContext context) {
     final consultations =
         Provider.of<ConsultationViewModel>(context).consultations;
-    final profileViewModel = Provider.of<ProfileViewModel>(context); // Get profile data
+    final profileViewModel = Provider.of<ProfileViewModel>(
+      context,
+    ); // Get profile data
 
     return Scaffold(
       appBar: AppBar(
@@ -42,10 +43,14 @@ class HomeScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('lib/assets/images/bodyBackground.png'), // Add your image here
+            image: AssetImage(
+              'lib/assets/images/bodyBackground.png',
+            ), // Add your image here
             fit: BoxFit.cover, // Covers the entire screen
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.4), // Adds a slight dark overlay for readability
+              Colors.black.withOpacity(
+                0.4,
+              ), // Adds a slight dark overlay for readability
               BlendMode.darken,
             ),
           ),
@@ -64,47 +69,85 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Register Student Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    RouteManager.studentRegistration,
+                  );
+                },
+                icon: const Icon(Icons.person_add),
+                label: const Text('Register Student'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF205759),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
               Expanded(
-                child: consultations.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No consultations booked yet',
-                          style: TextStyle(color: Colors.white), // White text
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: consultations.length,
-                        itemBuilder: (context, index) {
-                          final consultation = consultations[index];
-                          return Card(
-                            color: Colors.white.withOpacity(0.9), // Card with soft opacity for contrast
-                            child: ListTile(
-                              title: Text(consultation.description),
-                              subtitle: Text(consultation.topic),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                RouteManager.consultationDetailsScreen,
-                                arguments: consultation.toMap(),
+                child:
+                    consultations.isEmpty
+                        ? const Center(
+                          child: Text(
+                            'No consultations booked yet',
+                            style: TextStyle(color: Colors.white), // White text
+                          ),
+                        )
+                        : ListView.builder(
+                          itemCount: consultations.length,
+                          itemBuilder: (context, index) {
+                            final consultation = consultations[index];
+                            return Card(
+                              color: Colors.white.withOpacity(
+                                0.9,
+                              ), // Card with soft opacity for contrast
+                              child: ListTile(
+                                title: Text(consultation.description),
+                                subtitle: Text(consultation.topic),
+                                trailing: const Icon(Icons.chevron_right),
+                                onTap:
+                                    () => Navigator.pushNamed(
+                                      context,
+                                      RouteManager.consultationDetailsScreen,
+                                      arguments: consultation.toMap(),
+                                    ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(
-          context,
-          RouteManager.addConsultationScreen,
-        ),
+        onPressed:
+            () => Navigator.pushNamed(
+              context,
+              RouteManager.addConsultationScreen,
+            ),
         backgroundColor: const Color(0xFF205759), // Modern teal academic color
         elevation: 6, // Soft shadow for a sleek effect
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16), // Slightly rounded for a modern look
+          borderRadius: BorderRadius.circular(
+            16,
+          ), // Slightly rounded for a modern look
         ),
         child: const Icon(
           Icons.add,
@@ -115,18 +158,14 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: const Color(0xFF205759), // Cozy academic teal
         selectedItemColor: Colors.white, // Highlighted icon/text color
-        unselectedItemColor: Colors.grey.shade300, // Muted color for inactive items
+        unselectedItemColor:
+            Colors.grey.shade300, // Muted color for inactive items
         elevation: 8, // Adds a floating effect
-        type: BottomNavigationBarType.fixed, // Ensures labels are always visible
+        type:
+            BottomNavigationBarType.fixed, // Ensures labels are always visible
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: 0,
         onTap: (index) {
