@@ -2,6 +2,7 @@
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075 
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
 
+import 'package:assignement_1_2025/views/students/login_screen.dart';
 import 'package:flutter/material.dart';
 import '../views/add_consultation_screen.dart';
 import '../views/consultation_details_screen.dart';
@@ -13,11 +14,12 @@ class RouteManager {
   static const String addConsultationScreen = '/addConsultation';
   static const String consultationDetailsScreen = '/consultationDetails';
   static const String profileScreen = '/profile';
+  static const String login_screen ='/login_screen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homeScreen:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const HomeScreen(email: '',));
       case addConsultationScreen:
         return MaterialPageRoute(builder: (_) => const AddConsultationScreen());
       case consultationDetailsScreen:
@@ -27,6 +29,9 @@ class RouteManager {
         );
       case profileScreen:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+
+        case login_screen:
+        return MaterialPageRoute(builder: (_) => const LoginView());
       default:
         throw const FormatException('Route not found!');
     }

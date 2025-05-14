@@ -9,7 +9,9 @@ import '../viewmodels/consultation_view_model.dart';
 import '../viewmodels/profile_view_model.dart'; // Import profile ViewModel
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+   final String email; // User's email passed from the login page
+  const HomeScreen({super.key, required this.email});
+  
 
   @override
   Widget build(BuildContext context) {
