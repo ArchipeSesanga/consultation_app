@@ -24,6 +24,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
   bool _disabled = true; //button disabled by default
+  bool _isLoading = false; // Added loading state
   final List<Lecturer> _lecturers = [
     Lecturer(
       id: '1',
@@ -142,6 +143,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                       }).toList(),
                   onChanged: (value) {
                     setState(() => _selectedLecturer = value);
+                    _SetDisabled();
                   },
                   validator:
                       (value) =>
@@ -234,6 +236,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                 // Description Text Field
                 TextFormField(
                   controller: _descController,
+                  onChanged: (_) => _SetDisabled(),
                   decoration: InputDecoration(
                     labelText: 'Additional Notes',
                     labelStyle: const TextStyle(fontWeight: FontWeight.bold),
@@ -258,92 +261,112 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
 
                 // Save Button
                 Center(
-                  child: IgnorePointer(
-                    ignoring: _disabled,
-                    child: Opacity(
-                      opacity:
-                          _disabled ? 0.5 : 1.0, //Dim the button when disabled
-                      child: ElevatedButton(
-                        onPressed:
-                            _disabled
-                                ? null
-                                : () async {
-                                  print("Button pressed");
+                  child:
+                      _isLoading
+                          ? const CircularProgressIndicator() // Show loading indicator
+                          : IgnorePointer(
+                            ignoring: _disabled,
+                            child: Opacity(
+                              opacity:
+                                  _disabled
+                                      ? 0.5
+                                      : 1.0, //Dim the button when disabled
+                              child: ElevatedButton(
+                                onPressed:
+                                    _disabled
+                                        ? null
+                                        : () async {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            try {
+                                              setState(() => _isLoading = true);
 
-                                  if (_formKey.currentState!.validate()) {
-                                    print('Form is valid');
+                                              final description =
+                                                  _descController.text;
+                                              final topic =
+                                                  _topicController.text;
 
-                                    final description = _descController.text;
-                                    final topic = _topicController.text;
+                                              final user =
+                                                  FirebaseAuth
+                                                      .instance
+                                                      .currentUser;
+                                              final studentId =
+                                                  user?.uid ?? 'unknown';
 
-                                    final selectedDateTime = DateTime(
-                                      _selectedDate.year,
-                                      _selectedDate.month,
-                                      _selectedDate.day,
-                                      _selectedTime.hour,
-                                      _selectedTime.minute,
-                                    );
+                                              final consultation = Consultation(
+                                                id:
+                                                    DateTime.now()
+                                                        .millisecondsSinceEpoch
+                                                        .toString(),
+                                                description: description,
+                                                topic: topic,
+                                                date: _selectedDate,
+                                                time: _selectedTime,
+                                                lecturer: _selectedLecturer!,
+                                                studentId: studentId,
+                                              );
 
-                                    final user =
-                                        FirebaseAuth.instance.currentUser;
-                                    final studentId = user?.uid ?? 'unknown';
+                                              // Save the consultation to Firestore
+                                              await Provider.of<
+                                                ConsultationViewModel
+                                              >(
+                                                context,
+                                                listen: false,
+                                              ).addConsultation(consultation);
 
-                                    final consultation = Consultation(
-                                      id:
-                                          DateTime.now().millisecondsSinceEpoch
-                                              .toString(),
-                                      dateTime: selectedDateTime,
-                                      description: description,
-                                      topic: topic,
-                                      lecturer: _selectedLecturer!,
-                                      studentId: studentId,
-                                    );
+                                              // Show a success snack bar
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    'Consultation added successfully!',
+                                                  ),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
 
-                                    // Save the consultation information using the view model
-                                    await Provider.of<ConsultationViewModel>(
-                                      context,
-                                      listen: false,
-                                    ).addConsultation(consultation);
-
-                                    // Show a success snack bar
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Consultation added successfully!',
-                                        ),
-                                      ),
-                                    );
-
-                                    // Navigate back to the previous screen
-                                    Navigator.pop(context);
-                                  } else {
-                                    print('Form is not valid');
-                                  }
-                                },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 16,
-                          ), // Increased padding
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              12,
-                            ), // Rounded corners
+                                              // Navigate back to the previous screen
+                                              Navigator.pop(context);
+                                            } catch (e) {
+                                              // Handle errors
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Error: Failed to save consultation. ${e.toString()}',
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            } finally {
+                                              setState(
+                                                () => _isLoading = false,
+                                              );
+                                            }
+                                          }
+                                        },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 40,
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 5,
+                                ),
+                                child: const Text(
+                                  'Save Consultation',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          elevation: 5, // Subtle shadow effect
-                        ),
-                        child: const Text(
-                          'Save Consultation',
-                          style: TextStyle(
-                            fontSize:
-                                18, // Larger text size for better readability
-                            fontWeight:
-                                FontWeight.bold, // Bold text for emphasis
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -361,14 +384,12 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   }
 
   void _SetDisabled() {
-    if (_topicController.text.isNotEmpty) {
-      setState(() {
-        _disabled = false; // Enable the button
-      });
-    } else {
-      setState(() {
-        _disabled = true; // Disable the button
-      });
-    }
+    setState(() {
+      // Enable the button only if topic is not empty, description is not empty, and lecturer is selected
+      _disabled =
+          _topicController.text.isEmpty ||
+          _descController.text.isEmpty ||
+          _selectedLecturer == null;
+    });
   }
 }
