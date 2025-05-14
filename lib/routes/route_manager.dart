@@ -8,7 +8,8 @@ import '../views/add_consultation_screen.dart';
 import '../views/consultation_details_screen.dart';
 import '../views/home_screen.dart';
 import '../views/profile_page_screen.dart';
-import '../views/student_registration_screen.dart'; 
+
+import '../views/students/register_screen.dart';  
 
 class RouteManager {
   static const String homeScreen = '/';
@@ -31,7 +32,14 @@ class RouteManager {
         );
       case profileScreen:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
+      case login_screen:
+        return MaterialPageRoute(builder: (_) => const LoginView());
+      case registrationScreen:
+        return MaterialPageRoute(builder: (_) =>  StudentRegistrationScreen(onSubmit: 
+        (String studentId, String email, String password, String contact) {  },));
+      
       default:
+
         throw const FormatException('Route not found!');
     }
   }

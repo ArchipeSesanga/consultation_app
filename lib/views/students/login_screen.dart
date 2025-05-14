@@ -1,6 +1,6 @@
 import 'package:assignement_1_2025/viewmodels/auth_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
@@ -9,6 +9,7 @@ class LoginView extends StatefulWidget {
   @override
   State<LoginView> createState() => _LoginViewState();
 }
+
 
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
@@ -67,7 +68,7 @@ class _LoginViewState extends State<LoginView> {
                 decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) =>
-                    value!.length < 6 ? 'Min 8 characters' : null,
+                    value!.length < 6 ? 'Minimum 8 characters' : null,
               ),
               const SizedBox(height: 10),
               Row(
@@ -84,31 +85,41 @@ class _LoginViewState extends State<LoginView> {
                 ],
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (!_formKey.currentState!.validate()) return;
+             ElevatedButton(
+  onPressed: () async {
+    if (!_formKey.currentState!.validate()) return;
 
-                  await _saveRememberMe(rememberMe);
+    await _saveRememberMe(rememberMe);
 
-                  final result = await _authVM.login(
-                    email: _emailController.text.trim(),
-                    password: _passwordController.text.trim(),
-                  );
+    final result = await _authVM.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
 
-                  if (result == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Login successful')),
-                    );
-                    Navigator.pushReplacementNamed(context, '/HomePage');
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(result)),
-                    );
-                  }
-                },
-                child: const Text('Login'),
-              )
+    if (result == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login successful')),
+      );
+      Navigator.pushReplacementNamed(context, '/HomePage');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result)),
+      );
+    }
+  },
+  child: const Text('Login'),
+),
+const SizedBox(height: 10),
+TextButton(
+  onPressed: () {
+    Navigator.pushNamed(context, '/StudentRegistrationScreen'); // Make sure this route exists
+  },
+  child: const Text("Don't have an account? Register"),
+),
+
             ],
+            
+            
           ),
         ),
       ),
