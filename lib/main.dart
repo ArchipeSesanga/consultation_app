@@ -2,6 +2,7 @@
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075 
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
 
+import 'package:assignement_1_2025/viewmodels/booking_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'routes/route_manager.dart';
 import 'viewmodels/consultation_view_model.dart';
 import 'viewmodels/profile_view_model.dart';
+import 'viewmodels/booking_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +37,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ConsultationViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => BookingViewModel()),
       ],
       child: const MyApp(),
     ),
