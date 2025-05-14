@@ -47,6 +47,7 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => ProfileViewModel(),
       ),
+      ChangeNotifierProvider(create: (_) => ConsultationViewModel()),
     ],
     child: const MyApp(),
   ),
