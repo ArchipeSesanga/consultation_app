@@ -1,4 +1,3 @@
-import 'package:assignement_1_2025/models/student.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

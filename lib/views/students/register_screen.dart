@@ -1,15 +1,14 @@
 import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-
-class StudentRegistrationScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   final String? studentId;
   final String? initialEmail;
   final String? initialPassword;
   final String? initialContact;
   final Function(String studentId, String email, String password, String contact) onSubmit;
 
-  const StudentRegistrationScreen({
+  const RegisterScreen({
     super.key,
     this.studentId,
     this.initialEmail,
@@ -20,11 +19,12 @@ class StudentRegistrationScreen extends StatefulWidget {
   
 
   @override
-  State<StudentRegistrationScreen> createState() => _StudentRegistrationScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
   final  _auth = AuthService();
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _studentIdController = TextEditingController();
   final _emailController = TextEditingController();
@@ -32,6 +32,7 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
   final _contactController = TextEditingController();
 
   bool isFormValid = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -56,6 +57,28 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
     }
   }
 
+  Future<void> _handleSubmit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      await widget.onSubmit(
+        _studentIdController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _contactController.text.trim(),
+      );
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
   @override
   void dispose() {
     _studentIdController.dispose();
@@ -75,32 +98,21 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction, // real-time error highlighting
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: SingleChildScrollView(
             child: Column(
               children: [
                 TextFormField(
                   controller: _studentIdController,
                   decoration: const InputDecoration(labelText: 'Student ID'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    // Placeholder for uniqueness check
-                    // if (existingIds.contains(value)) return 'ID already exists';
-                    return null;
-                  },
+                  validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                 ),
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Invalid email';
-                    }
+                    if (value == null || value.isEmpty) return 'Required';
+                    if (!value.contains('@')) return 'Invalid email';
                     return null;
                   },
                 ),
@@ -109,15 +121,9 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                   decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    if (value.length < 8) {
-                      return 'Minimum 8 characters';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Must contain "@"';
-                    }
+                    if (value == null || value.isEmpty) return 'Required';
+                    if (value.length < 8) return 'Minimum 8 characters';
+                    if (!value.contains('@')) return 'Must contain "@"';
                     return null;
                   },
                 ),
@@ -160,6 +166,12 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
         : null,
     child: Text(widget.studentId == null ? 'Register' : 'Update'),
   ),
+                ElevatedButton(
+                  onPressed: isFormValid && !isLoading ? _handleSubmit : null,
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(widget.studentId == null ? 'Register Student' : 'Update Student'),
+                ),
               ],
             ),
           ),
