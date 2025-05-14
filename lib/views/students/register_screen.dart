@@ -94,21 +94,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidateMode: AutovalidateMode.onUserInteraction, // real-time error highlighting
           child: SingleChildScrollView(
             child: Column(
               children: [
                 TextFormField(
                   controller: _studentIdController,
                   decoration: const InputDecoration(labelText: 'Student ID'),
-                  validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    // Placeholder for uniqueness check
+                    // if (existingIds.contains(value)) return 'ID already exists';
+                    return null;
+                  },
                 ),
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'Required';
-                    if (!value.contains('@')) return 'Invalid email';
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Invalid email';
+                    }
                     return null;
                   },
                 ),
@@ -117,9 +128,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'Required';
-                    if (value.length < 8) return 'Minimum 8 characters';
-                    if (!value.contains('@')) return 'Must contain "@"';
+                    if (value == null || value.isEmpty) {
+                      return 'Required';
+                    }
+                    if (value.length < 8) {
+                      return 'Minimum 8 characters';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Must contain "@"';
+                    }
                     return null;
                   },
                 ),
@@ -130,10 +147,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: isFormValid && !isLoading ? _handleSubmit : null,
-                  child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(widget.studentId == null ? 'Register Student' : 'Update Student'),
+                  onPressed: isFormValid
+                      ? () {
+                          if (_formKey.currentState!.validate()) {
+                            widget.onSubmit(
+                              _studentIdController.text.trim(),
+                              _emailController.text.trim(),
+                              _passwordController.text.trim(),
+                              _contactController.text.trim(),
+                            );
+                            Navigator.pop(context);
+                          }
+                        }
+                      : null,
+                  child: Text(widget.studentId == null ? 'Register Student' : 'Update Student'),
                 ),
               ],
             ),
@@ -143,3 +170,5 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
+

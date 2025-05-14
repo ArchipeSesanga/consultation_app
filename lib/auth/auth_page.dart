@@ -1,5 +1,6 @@
 //import 'package:firebase_flutter/routes/app_router.dart';
 import 'package:assignement_1_2025/routes/route_manager.dart';
+import 'package:assignement_1_2025/services/firebase_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +21,9 @@ class _AuthPageState extends State<AuthPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
+  final _studentIdController = TextEditingController();
+  final _contactController = TextEditingController();
+
   bool _isLoading = false;
   bool rememberMe = false;
 
@@ -74,11 +78,16 @@ class _AuthPageState extends State<AuthPage> {
           arguments: _emailController.text.trim(),
         );
       } else {
-        await authService.register(
+        // Register user
+        final userCredential = await authService.register(
           _emailController.text.trim(),
           _passwordController.text.trim(),
-          _nameController.text.trim(),
         );
+
+        await userCredential.user?.updateDisplayName(_nameController.text.trim());
+
+        // You might also want to save studentId and contact somewhere
+        // Possibly in Firestore or elsewhere, depending on your app's setup
 
         Navigator.pushReplacementNamed(context, RouteManager.authPage);
       }
@@ -99,58 +108,76 @@ class _AuthPageState extends State<AuthPage> {
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              if (!widget.isLogin)
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Full Name'),
-                  validator: (value) => value!.isEmpty ? 'Required field' : null,
+          child: SingleChildScrollView( // Added scroll in case of small screens
+            child: Column(
+              children: [
+                if (!widget.isLogin) ...[
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Full Name'),
+                    validator: (value) => value!.isEmpty ? 'Required field' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _studentIdController,
+                    decoration: const InputDecoration(labelText: 'Student ID'),
+                    validator: (value) => value!.isEmpty ? 'Required field' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _contactController,
+                    decoration: const InputDecoration(labelText: 'Contact Number'),
+                    validator: (value) => value!.isEmpty ? 'Required field' : null,
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                EmailFormField(controller: _emailController),
+                const SizedBox(height: 16),
+                PasswordFormField(controller: _passwordController),
+                const SizedBox(height: 16),
+                if (widget.isLogin)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            rememberMe = value!;
+                          });
+                        },
+                      ),
+                      const Text('Remember Me'),
+                    ],
+                  ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _isLoading ? null : () => _submit(context),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(widget.isLogin ? 'Login' : 'Register'),
                 ),
-              const SizedBox(height: 16),
-              EmailFormField(controller: _emailController),
-              const SizedBox(height: 16),
-              PasswordFormField(controller: _passwordController),
-              const SizedBox(height: 16),
-              if (widget.isLogin)
-                Row(
-                  children: [
-                    Checkbox(
-                      value: rememberMe,
-                      onChanged: (value) {
-                        setState(() {
-                          rememberMe = value!;
-                        });
-                      },
-                    ),
-                    const Text('Remember Me'),
-                  ],
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AuthPage(isLogin: !widget.isLogin),
+                      ),
+                    );
+                  },
+                  child: Text(widget.isLogin
+                      ? 'Create an account'
+                      : 'Already have an account?'),
                 ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : () => _submit(context),
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : Text(widget.isLogin ? 'Login' : 'Register'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pushReplacementNamed(
-                  context,
-                  widget.isLogin
-                      ? RouteManager.registrationPage
-                      : RouteManager.authPage,
-                ),
-                child: Text(widget.isLogin
-                    ? 'Create an account'
-                    : 'Already have an account?'),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
 
 // This code defines an authentication page that allows users to either log in or register.
 // It uses a form with validation for email and password inputs, and conditionally shows a name input field for registration.
