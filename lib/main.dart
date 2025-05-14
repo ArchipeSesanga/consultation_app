@@ -65,7 +65,8 @@ class MyApp extends StatelessWidget {
           ), // White icons for a clean look
         ),
       ),
-      initialRoute: RouteManager.homeScreen,
+      
+      initialRoute: RouteManager.login_screen,
       onGenerateRoute: RouteManager.generateRoute,
     );
   }

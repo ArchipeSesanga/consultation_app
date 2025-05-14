@@ -13,11 +13,13 @@ class RouteManager {
   static const String addConsultationScreen = '/addConsultation';
   static const String consultationDetailsScreen = '/consultationDetails';
   static const String profileScreen = '/profile';
+  static const String login_screen = '/login_screen';
+  static const String registrationScreen = '/register';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homeScreen:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const HomeScreen(email: ''));
       case addConsultationScreen:
         return MaterialPageRoute(builder: (_) => const AddConsultationScreen());
       case consultationDetailsScreen:
