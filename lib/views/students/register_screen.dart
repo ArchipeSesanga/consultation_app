@@ -22,9 +22,8 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
-  final  _auth = AuthService();
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _studentIdController = TextEditingController();
   final _emailController = TextEditingController();
@@ -141,6 +140,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 final user = await _auth.CreateUserWithEmailAndPassword(
                   _emailController.text.trim(),
                   _passwordController.text.trim(),
+                  _studentIdController.text.trim(),
+
                 );
 
                 if (user != null) {
@@ -180,6 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
   
           
               

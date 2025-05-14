@@ -12,7 +12,7 @@ class AuthService {
 
   Future<User?> CreateUserWithEmailAndPassword(
     String email,
-    String password,
+    String password, String trim,
   ) async {
     try{
        final cred = await _auth.createUserWithEmailAndPassword(

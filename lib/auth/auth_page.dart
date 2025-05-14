@@ -1,9 +1,11 @@
-//import 'package:firebase_flutter/routes/app_router.dart';
+
 import 'package:assignement_1_2025/routes/route_manager.dart';
+import 'package:assignement_1_2025/services/auth_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import '../services/auth_service.dart';
+
 import 'email_formfield.dart';
 import 'password_formfield.dart';
 
@@ -63,7 +65,7 @@ class _AuthPageState extends State<AuthPage> {
       if (widget.isLogin) {
         await _saveRememberMe(rememberMe);
 
-        await authService.login(
+        await authService.logUserWithEmailAndPassword(
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
@@ -74,7 +76,7 @@ class _AuthPageState extends State<AuthPage> {
           arguments: _emailController.text.trim(),
         );
       } else {
-        await authService.register(
+        await authService.CreateUserWithEmailAndPassword(
           _emailController.text.trim(),
           _passwordController.text.trim(),
           _nameController.text.trim(),
@@ -152,6 +154,4 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
-// This code defines an authentication page that allows users to either log in or register.
-// It uses a form with validation for email and password inputs, and conditionally shows a name input field for registration.
-// The page handles form submission, showing loading indicators and error messages as needed.
+
