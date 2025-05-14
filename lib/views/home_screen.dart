@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../routes/route_manager.dart';
 import '../viewmodels/consultation_view_model.dart';
-import '../viewmodels/profile_view_model.dart'; // Import profile ViewModel
+import '../viewmodels/profile_view_model.dart';
 
 class HomeScreen extends StatelessWidget {
    final String email; // User's email passed from the login page
@@ -17,35 +17,34 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final consultations =
         Provider.of<ConsultationViewModel>(context).consultations;
-    final profileViewModel = Provider.of<ProfileViewModel>(context); // Get profile data
+    final profileViewModel = Provider.of<ProfileViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
         centerTitle: true,
-        backgroundColor: const Color(0xFF205759), // Cozy academic greenish-teal
+        backgroundColor: const Color(0xFF205759),
         elevation: 2,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16.0), // Add some space
+            padding: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
-              radius: 20, // Adjust size
-              backgroundImage:
-                  profileViewModel.image != null
-                      ? FileImage(profileViewModel.image!)
-                      : const NetworkImage('https://picsum.photos/250?image=9')
-                          as ImageProvider,
+              radius: 20,
+              backgroundImage: profileViewModel.image != null
+                  ? FileImage(profileViewModel.image!)
+                  : const NetworkImage('https://picsum.photos/250?image=9')
+                      as ImageProvider,
             ),
           ),
         ],
       ),
       body: Container(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('lib/assets/images/bodyBackground.png'), // Add your image here
-            fit: BoxFit.cover, // Covers the entire screen
+          image: const DecorationImage(
+            image: AssetImage('lib/assets/images/bodyBackground.png'),
+            fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.4), // Adds a slight dark overlay for readability
+              Colors.black54,
               BlendMode.darken,
             ),
           ),
@@ -60,16 +59,40 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white, // White text for contrast
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 20),
+
+              // Register Student Button
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteManager.registrationScreen);
+                },
+                icon: const Icon(Icons.person_add),
+                label: const Text('Register Student'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF205759),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24, vertical: 12),
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
               Expanded(
                 child: consultations.isEmpty
                     ? const Center(
                         child: Text(
                           'No consultations booked yet',
-                          style: TextStyle(color: Colors.white), // White text
+                          style: TextStyle(color: Colors.white),
                         ),
                       )
                     : ListView.builder(
@@ -77,7 +100,7 @@ class HomeScreen extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final consultation = consultations[index];
                           return Card(
-                            color: Colors.white.withOpacity(0.9), // Card with soft opacity for contrast
+                            color: Colors.white.withOpacity(0.9),
                             child: ListTile(
                               title: Text(consultation.description),
                               subtitle: Text(consultation.topic),
@@ -97,27 +120,25 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(
-          context,
-          RouteManager.addConsultationScreen,
-        ),
-        backgroundColor: const Color(0xFF205759), // Modern teal academic color
-        elevation: 6, // Soft shadow for a sleek effect
+        onPressed: () =>
+            Navigator.pushNamed(context, RouteManager.addConsultationScreen),
+        backgroundColor: const Color(0xFF205759),
+        elevation: 6,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16), // Slightly rounded for a modern look
+          borderRadius: BorderRadius.circular(16),
         ),
         child: const Icon(
           Icons.add,
-          color: Colors.white, // White for contrast
-          size: 28, // Larger icon for better visibility
+          color: Colors.white,
+          size: 28,
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF205759), // Cozy academic teal
-        selectedItemColor: Colors.white, // Highlighted icon/text color
-        unselectedItemColor: Colors.grey.shade300, // Muted color for inactive items
-        elevation: 8, // Adds a floating effect
-        type: BottomNavigationBarType.fixed, // Ensures labels are always visible
+        backgroundColor: const Color(0xFF205759),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey.shade300,
+        elevation: 8,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
