@@ -2,6 +2,7 @@
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075 
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   */
 
+import 'package:assignement_1_2025/models/lecturer.dart';
 import 'package:flutter/material.dart';
 import '../views/add_consultation_screen.dart';
 import '../views/consultation_details_screen.dart';
@@ -14,6 +15,13 @@ class RouteManager {
   static const String consultationDetailsScreen = '/consultationDetails';
   static const String profileScreen = '/profile';
 
+  static get lecturer => Lecturer(
+    id: "220001345",
+    name: "Thapelo",
+    email: "Thapelo@gmail.com",
+    module: "TPG316",
+  );
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homeScreen:
@@ -23,7 +31,11 @@ class RouteManager {
       case consultationDetailsScreen:
         final consultation = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (_) => ConsultationDetailsScreen(consultation: consultation),
+          builder:
+              (_) => ConsultationDetailsScreen(
+                consultation: consultation,
+                lecturer: lecturer,
+              ),
         );
       case profileScreen:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
