@@ -67,7 +67,7 @@ class HomeScreen extends StatelessWidget {
               // Register Student Button
               ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.pushNamed(context, RouteManager.registrationScreen);
+                  Navigator.pushNamed(context, RouteManager.studentRegistration);
                 },
                 icon: const Icon(Icons.person_add),
                 label: const Text('Register Student'),
