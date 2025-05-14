@@ -11,7 +11,7 @@ class PasswordFormField extends StatelessWidget {
       obscureText: true,
       decoration: const InputDecoration(
         labelText: 'Password',
-        prefixIcon: Icon(Icons.lock),
+        
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Password is required';
