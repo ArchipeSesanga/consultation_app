@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       
-      initialRoute: RouteManager.login_screen,
+      initialRoute: RouteManager.authPage,
       onGenerateRoute: RouteManager.generateRoute,
     );
   }
