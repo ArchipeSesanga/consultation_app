@@ -1,5 +1,5 @@
-import 'package:assignement_1_2025/views/students/login_screen.dart';
-import 'package:assignement_1_2025/views/students/register_screen.dart';
+import 'package:assignement_1_2025/auth/auth_page.dart';
+import "package:assignement_1_2025/views/students/register_screen.dart";
 import 'package:flutter/material.dart';
 import '../views/add_consultation_screen.dart';
 import '../views/consultation_details_screen.dart';
@@ -12,11 +12,10 @@ class RouteManager {
   static const String addConsultationScreen = '/addConsultation';
   static const String consultationDetailsScreen = '/consultationDetails';
   static const String profileScreen = '/profile';
-  static const String login_screen = '/login-screen';
+  static const String authPage = '/auth-page';
   static const String registrationPage = '/register';
-  static const String register_screen = '/studentRegistrationScreen';
   static const String studentRegistration = '/studentRegistration';
-  static const String mainPage = '/mainPage'; // Assuming you have this too
+  static const String mainPage = '/mainPage';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -28,42 +27,39 @@ class RouteManager {
       case consultationDetailsScreen:
         final consultation = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (_) => ConsultationDetailsScreen(consultation: consultation),
+          builder: (_) =>
+              ConsultationDetailsScreen(consultation: consultation),
         );
 
       case profileScreen:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
 
-      case login_screen:
+      case authPage:
         return MaterialPageRoute(
-          builder: (_) => const LoginView(isLogin: true),
+          builder: (_) => const AuthPage(isLogin: true),
         );
 
-      case register_screen:
+      case registrationPage:
         return MaterialPageRoute(
-          builder: (_) => const LoginView(isLogin: false),
+          builder: (_) => const AuthPage(isLogin: false),
         );
 
       case studentRegistration:
-        final args =
-            settings.arguments
-                as Map<String, dynamic>?; // if you’re passing initial values
+        final args = settings.arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder:
-              (_) => StudentRegistrationScreen(
-                studentId: args?['studentId'],
-                initialEmail: args?['initialEmail'],
-                initialPassword: args?['initialPassword'],
-                initialContact: args?['initialContact'],
-                onSubmit: args?['onSubmit'],
-              ),
+          builder: (_) => RegisterScreen(
+            studentId: args?['studentId'],
+            initialEmail: args?['initialEmail'],
+            initialPassword: args?['initialPassword'],
+            initialContact: args?['initialContact'],
+            onSubmit: args?['onSubmit'],
+          ),
         );
 
       case mainPage:
         final email = settings.arguments as String?;
         return MaterialPageRoute(
-          builder:
-              (_) => HomeScreen(email: ''), // replace with your main dashboard
+          builder: (_) => HomeScreen(email: email ?? ''),
         );
 
       default:

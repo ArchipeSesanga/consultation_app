@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 
-class StudentRegistrationScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   final String? studentId;
   final String? initialEmail;
   final String? initialPassword;
   final String? initialContact;
   final Function(String studentId, String email, String password, String contact) onSubmit;
 
-  const StudentRegistrationScreen({
+  const RegisterScreen({
     super.key,
     this.studentId,
     this.initialEmail,
@@ -18,10 +18,10 @@ class StudentRegistrationScreen extends StatefulWidget {
   });
 
   @override
-  State<StudentRegistrationScreen> createState() => _StudentRegistrationScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _studentIdController = TextEditingController();
   final _emailController = TextEditingController();
@@ -29,6 +29,7 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
   final _contactController = TextEditingController();
 
   bool isFormValid = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -50,6 +51,28 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
       setState(() {
         isFormValid = isValid;
       });
+    }
+  }
+
+  Future<void> _handleSubmit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      await widget.onSubmit(
+        _studentIdController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _contactController.text.trim(),
+      );
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -148,3 +171,5 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
     );
   }
 }
+
+
