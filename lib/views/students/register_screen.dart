@@ -137,37 +137,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
   ElevatedButton(
     onPressed: isFormValid
-        ? () async {
-            if (_formKey.currentState!.validate()) {
-              try {
-                final user = await _auth.createUserWithEmailAndPassword(
-                  _emailController.text.trim(),
-                  _passwordController.text.trim(),
-                  _studentIdController.text.trim(),
+    ? () async {
+        if (_formKey.currentState!.validate()) {
+          final error = await _auth.register(
+            _emailController.text.trim(),
+            _passwordController.text.trim(), email: '',
+          );
 
-                );
-
-                if (user != null) {
-                  widget.onSubmit(
-                    _studentIdController.text.trim(),
-                    _emailController.text.trim(),
-                    _passwordController.text.trim(),
-                    _contactController.text.trim(),
-                  );
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('User registration failed.')),
-                  );
-                }
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error: ${e.toString()}')),
-                );
-              }
-            }
+          if (error == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Registration successful')),
+            );
+            Navigator.pop(context);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(error)),
+            );
           }
-        : null,
+        }
+      }
+    : null,
+
     child: Text(widget.studentId == null ? 'Register' : 'Update'),
   ),
                 ElevatedButton(

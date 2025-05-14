@@ -71,34 +71,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Register Student Button
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    RouteManager.studentRegistration,
-                  );
-                },
-                icon: const Icon(Icons.person_add),
-                label: const Text('Register Student'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF205759),
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
+              
 
               Expanded(
                 child:

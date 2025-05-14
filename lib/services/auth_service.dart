@@ -53,7 +53,7 @@ class AuthService {
     }
   }
 
-  register(String trim, String trim2) {}
+  register(String trim, String trim2, {required String email}) {}
 
   login(String trim, String trim2) {}
   
