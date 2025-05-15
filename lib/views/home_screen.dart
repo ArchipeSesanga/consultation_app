@@ -11,8 +11,8 @@ import '../viewmodels/profile_view_model.dart';
 import '../models/consultation.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String initialEmail;
-  const HomeScreen({Key? key, required this.initialEmail}) : super(key: key);
+  final String email;
+  const HomeScreen({Key? key, required this.email}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // Personalized welcome message
               Text(
-                'Welcome, ${widget.initialEmail.isNotEmpty ? widget.initialEmail.split('@').first : "Student"}!',
+                'Welcome, ${widget.email.isNotEmpty ? widget.email.split('@').first : "Student"}!',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
