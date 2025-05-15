@@ -4,6 +4,7 @@ Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P   S
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import '../models/consultation.dart';
 import '../models/lecturer.dart';
 
@@ -64,6 +65,28 @@ class ConsultationViewModel with ChangeNotifier {
     }
   }
 
+  // Update an existing consultation
+  Future<void> updateConsultation(Consultation consultation) async {
+    try {
+      // Update in Firestore
+      await _firestore
+          .collection(_collectionPath)
+          .doc(consultation.id)
+          .update(consultation.toMap());
+
+      // Update in local cache
+      final index = _consultations.indexWhere((c) => c.id == consultation.id);
+      if (index != -1) {
+        _consultations[index] = consultation;
+      }
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error updating consultation: $e');
+      throw Exception('Failed to update consultation: $e');
+    }
+  }
+
   // Get consultations for a specific student
   Future<List<Consultation>> getStudentConsultations(String studentId) async {
     try {
@@ -85,6 +108,23 @@ class ConsultationViewModel with ChangeNotifier {
     }
   }
 
+  // Get consultations grouped by date
+  Map<String, List<Consultation>> getConsultationsGroupedByDate() {
+    final Map<String, List<Consultation>> grouped = {};
+
+    for (var consultation in _consultations) {
+      final dateStr = DateFormat('yyyy-MM-dd').format(consultation.date);
+
+      if (!grouped.containsKey(dateStr)) {
+        grouped[dateStr] = [];
+      }
+
+      grouped[dateStr]!.add(consultation);
+    }
+
+    return grouped;
+  }
+
   // Delete a consultation by id
   Future<void> deleteConsultation(String id) async {
     try {
@@ -98,6 +138,15 @@ class ConsultationViewModel with ChangeNotifier {
     } catch (e) {
       debugPrint('Error deleting consultation: $e');
       throw Exception('Failed to delete consultation: $e');
+    }
+  }
+
+  // Find a consultation by ID
+  Consultation? getConsultationById(String id) {
+    try {
+      return _consultations.firstWhere((consultation) => consultation.id == id);
+    } catch (e) {
+      return null;
     }
   }
 }
