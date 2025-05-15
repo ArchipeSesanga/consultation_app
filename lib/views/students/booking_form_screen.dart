@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:intl/intl.dart';
-import 'package:assignement_1_2025/viewmodels/booking_view_model.dart';
-import 'package:assignement_1_2025/models/booking.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});

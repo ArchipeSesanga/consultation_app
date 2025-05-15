@@ -25,6 +25,8 @@ class UpdateButton extends StatelessWidget {
 }
 
 class UpdateProfileDialog extends StatefulWidget {
+  const UpdateProfileDialog({super.key});
+
   @override
   _UpdateProfileDialogState createState() => _UpdateProfileDialogState();
 }

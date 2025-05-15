@@ -12,7 +12,7 @@ import '../models/consultation.dart';
 
 class HomeScreen extends StatefulWidget {
   final String email;
-  const HomeScreen({Key? key, required this.email}) : super(key: key);
+  const HomeScreen({super.key, required this.email});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -205,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                       ),
                                     );
-                                  }).toList(),
+                                  }),
                                 ],
                               );
                             },
