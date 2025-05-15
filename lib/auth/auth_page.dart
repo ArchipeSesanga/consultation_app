@@ -1,5 +1,5 @@
 /*
-Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075    221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 import 'package:assignement_1_2025/routes/route_manager.dart';
 import 'package:assignement_1_2025/services/auth_service.dart';
@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'email_formfield.dart';
 import 'password_formfield.dart';
+
 class AuthPage extends StatefulWidget {
   final bool isLogin;
   const AuthPage({super.key, required this.isLogin});
@@ -98,6 +99,25 @@ class _AuthPageState extends State<AuthPage> {
           _emailController.text.trim(),
           _passwordController.text.trim(),
           _nameController.text.trim(),
+        );
+
+        // ✅ Success popup after registration
+        await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Success'),
+              content: const Text('You have registered successfully!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
         );
 
         Navigator.pushReplacementNamed(context, RouteManager.authPage);
