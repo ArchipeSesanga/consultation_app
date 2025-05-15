@@ -1,12 +1,12 @@
  /*
-Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075    221005490
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 import 'package:assignement_1_2025/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
 class ProfileViewModel with ChangeNotifier {
-  final ProfileData _profileData = ProfileData(
+  ProfileData _profileData = ProfileData(
     name: '',
     role: '',
     email: '',

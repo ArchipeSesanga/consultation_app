@@ -1,5 +1,5 @@
 /*
-Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075    221005490
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
 import 'package:assignement_1_2025/models/lecturer.dart';
@@ -490,6 +490,6 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
 // Extension to capitalize the first letter of a string
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${substring(1)}";
+    return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }

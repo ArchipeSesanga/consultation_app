@@ -1,7 +1,8 @@
 /*
-Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075    221005490
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
+import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +13,7 @@ import '../models/consultation.dart';
 
 class HomeScreen extends StatefulWidget {
   final String email;
-  const HomeScreen({super.key, required this.email});
+  const HomeScreen({Key? key, required this.email}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -48,10 +49,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Dashboard'),
         centerTitle: true,
         backgroundColor: const Color(0xFF205759),
         elevation: 2,
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () async {
+            final authService = Provider.of<AuthService>(
+              context,
+              listen: false,
+            );
+            await authService.signOut();
+            Navigator.pushReplacementNamed(context, RouteManager.authPage);
+          },
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
@@ -66,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -205,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                       ),
                                     );
-                                  }),
+                                  }).toList(),
                                 ],
                               );
                             },

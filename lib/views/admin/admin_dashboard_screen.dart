@@ -2,6 +2,7 @@
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
+import 'package:assignement_1_2025/routes/route_manager.dart';
 import 'package:assignement_1_2025/views/admin/bookings_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:assignement_1_2025/services/auth_service.dart';
@@ -20,6 +21,19 @@ class AdminDashboard extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
+              final authService = Provider.of<AuthService>(
+                context,
+                listen: false,
+              );
+              await authService
+                  .signOut(); // <-- implement this in your AuthService
+              Navigator.pushReplacementNamed(context, RouteManager.authPage);
+            },
+          ),
+
+          /*IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
               // Log out and navigate to login screen
               await Provider.of<AuthService>(context, listen: false).signOut();
               Navigator.pushNamedAndRemoveUntil(
@@ -28,7 +42,7 @@ class AdminDashboard extends StatelessWidget {
                 (route) => false,
               );
             },
-          )
+          )*/
         ],
       ),
       drawer: Drawer(
@@ -36,8 +50,13 @@ class AdminDashboard extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Color.fromARGB(255, 53, 159, 131)),
-              child: Text('Admin Menu', style: TextStyle(color: Colors.white, fontSize: 24)),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 53, 159, 131),
+              ),
+              child: Text(
+                'Admin Menu',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.person),

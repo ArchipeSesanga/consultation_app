@@ -36,30 +36,28 @@ class RouteManager {
 
       case editConsultationScreen:
         final consultation = settings.arguments as Consultation?;
-        return MaterialPageRoute(builder: (_) => AddConsultationScreen(consultation: consultation)
+        return MaterialPageRoute(
+          builder: (_) => AddConsultationScreen(consultation: consultation),
         );
 
       case consultationDetailsScreen:
         final consultation = settings.arguments as Consultation;
         return MaterialPageRoute(
-          builder: (_) =>
-              ConsultationDetailsScreen(consultation: consultation),
+          builder: (_) => ConsultationDetailsScreen(consultation: consultation),
         );
 
       case profileScreen:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
 
       case authPage:
-        return MaterialPageRoute(
-          builder: (_) => const AuthPage(isLogin: true),
-        );
+        return MaterialPageRoute(builder: (_) => const AuthPage(isLogin: true));
 
       case registrationPage:
         return MaterialPageRoute(
           builder: (_) => const AuthPage(isLogin: false),
         );
 
-      case studentRegistration:
+      /*case studentRegistration:
         final args = settings.arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
           builder: (_) => RegisterScreen(
@@ -69,7 +67,7 @@ class RouteManager {
             initialContact: args?['initialContact'],
             onSubmit: args?['onSubmit'],
           ),
-        );
+        );*/
 
       case mainPage:
         final email = settings.arguments as String?;
@@ -85,9 +83,7 @@ class RouteManager {
         );
 
       case adminRegister:
-        return MaterialPageRoute(
-          builder: (_) => const AdminRegisterScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const AdminRegisterScreen());
 
       default:
         throw const FormatException('Route not found!');

@@ -1,5 +1,5 @@
 /*
-Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075    221005490
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +14,7 @@ class AuthService {
   // Register user
   Future<User?> createUserWithEmailAndPassword(
     String email,
-    String password, String trim,
+    String password,
   ) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
@@ -75,11 +75,14 @@ class AuthService {
         password: password,
       );
       // Save admin role in Firestore
-      await FirebaseFirestore.instance.collection('admins').doc(cred.user!.uid).set({
-        'email': email,
-        'role': 'admin',
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(cred.user!.uid)
+          .set({
+            'email': email,
+            'role': 'admin',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
       return cred.user;
     } catch (e) {
       debugPrint("Admin registration error: $e");
@@ -95,4 +98,8 @@ class AuthService {
       debugPrint("Sign out error: $e");
     }
   }
+
+  /*Future<void> signOut() async {
+  await FirebaseAuth.instance.signOut();
+}*/
 }

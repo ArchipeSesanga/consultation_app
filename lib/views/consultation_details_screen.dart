@@ -1,7 +1,8 @@
 /*
-Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075    221005490
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -12,7 +13,8 @@ import '../models/consultation.dart';
 class ConsultationDetailsScreen extends StatelessWidget {
   final Consultation consultation;
 
-  const ConsultationDetailsScreen({super.key, required this.consultation});
+  const ConsultationDetailsScreen({Key? key, required this.consultation})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
