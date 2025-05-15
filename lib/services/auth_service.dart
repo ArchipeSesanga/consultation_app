@@ -14,7 +14,7 @@ class AuthService {
   // Register user
   Future<User?> createUserWithEmailAndPassword(
     String email,
-    String password, String trim,
+    String password,
   ) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
@@ -95,9 +95,4 @@ class AuthService {
       debugPrint("Sign out error: $e");
     }
   }
-
-  register(String trim, String trim2, {required String email}) {}
-
-  login(String trim, String trim2) {}
-  
 }
