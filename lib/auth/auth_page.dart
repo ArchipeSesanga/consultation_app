@@ -24,6 +24,9 @@ class _AuthPageState extends State<AuthPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
+  final _studentIdController = TextEditingController();
+  final _contactController = TextEditingController();
+
   bool _isLoading = false;
   bool rememberMe = false;
 
@@ -82,6 +85,7 @@ class _AuthPageState extends State<AuthPage> {
           _emailController.text.trim(),
           _passwordController.text.trim(),
           _nameController.text.trim(),
+          
         );
 
         Navigator.pushReplacementNamed(context, RouteManager.authPage);
@@ -103,14 +107,25 @@ class _AuthPageState extends State<AuthPage> {
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: [
-              if (!widget.isLogin)
+              if (!widget.isLogin) ...[
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Full Name'),
                   validator: (value) => value!.isEmpty ? 'Required field' : null,
                 ),
+                TextFormField(
+                  controller: _studentIdController,
+                  decoration: const InputDecoration(labelText: 'Student ID'),
+                  validator: (value) => value!.isEmpty ? 'Required field' : null,
+                ),
+                TextFormField(
+                  controller: _contactController,
+                  decoration: const InputDecoration(labelText: 'Contact Number'),
+                  validator: (value) => value!.isEmpty ? 'Required field' : null,
+                ),
+              ],
               const SizedBox(height: 16),
               EmailFormField(controller: _emailController),
               const SizedBox(height: 16),
@@ -155,5 +170,3 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 }
-
-

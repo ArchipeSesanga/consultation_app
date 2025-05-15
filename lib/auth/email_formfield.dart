@@ -17,10 +17,10 @@ class EmailFormField extends StatelessWidget {
       
       ),
       validator: (value) {
-        if (value == null || value.isEmpty) return 'Email is required';
-        
-        return null;
-      },
+                    if (value == null || value.isEmpty) return 'Required';
+                    if (!value.contains('@')) return 'Invalid email';
+                    return null;
+                  },
     );
   }
 }
