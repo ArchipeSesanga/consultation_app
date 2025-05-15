@@ -1,4 +1,4 @@
- /*
+/*
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
@@ -11,7 +11,10 @@ import '../models/consultation.dart';
 import '../viewmodels/consultation_view_model.dart';
 
 class AddConsultationScreen extends StatefulWidget {
-  const AddConsultationScreen({super.key});
+  final Consultation?
+  consultation; // Optional parameter for editing existing consultation
+
+  const AddConsultationScreen({super.key, this.consultation});
 
   @override
   State<AddConsultationScreen> createState() => _AddConsultationScreenState();
@@ -25,6 +28,13 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   bool _disabled = true; //button disabled by default
   bool _isLoading = false; // Added loading state
+  bool _isEditing = false; // Flag to check if we're editing or creating
+  String? _originalConsultationId; // To store original ID when editing
+
+  // Status options (for the new requirement)
+  String _consultationStatus = 'pending'; // Default status
+  final List<String> _statusOptions = ['pending', 'confirmed'];
+
   final List<Lecturer> _lecturers = [
     Lecturer(
       id: '1',
@@ -59,6 +69,33 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   ];
 
   Lecturer? _selectedLecturer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Check if we're editing an existing consultation
+    if (widget.consultation != null) {
+      _isEditing = true;
+      _originalConsultationId = widget.consultation!.id;
+      _topicController.text = widget.consultation!.topic;
+      _descController.text = widget.consultation!.description;
+      _selectedDate = widget.consultation!.date;
+      _selectedTime = widget.consultation!.time;
+      _consultationStatus =
+          widget.consultation!.status ??
+          'pending'; // Use the consultation status or default to pending
+
+      // Find the lecturer that matches the one in the consultation
+      _selectedLecturer = _lecturers.firstWhere(
+        (lecturer) => lecturer.id == widget.consultation!.lecturer.id,
+        orElse: () => _lecturers.first,
+      );
+
+      // Since we're populating all fields, the button should be enabled
+      _disabled = false;
+    }
+  }
 
   // Select Date
   Future<void> _selectDate(BuildContext context) async {
@@ -111,7 +148,9 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Consultation')),
+      appBar: AppBar(
+        title: Text(_isEditing ? 'Edit Consultation' : 'Add Consultation'),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: SingleChildScrollView(
@@ -257,6 +296,35 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                   style: const TextStyle(fontSize: 16),
                 ),
 
+                const SizedBox(height: 20),
+                // Status Dropdown (New)
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Status',
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 16,
+                    ),
+                  ),
+                  value: _consultationStatus,
+                  items:
+                      _statusOptions.map((status) {
+                        return DropdownMenuItem<String>(
+                          value: status,
+                          child: Text(status.capitalize()),
+                        );
+                      }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setState(() => _consultationStatus = value);
+                    }
+                  },
+                ),
+
                 const SizedBox(height: 30),
 
                 // Save Button
@@ -293,38 +361,61 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                                               final studentId =
                                                   user?.uid ?? 'unknown';
 
+                                              // Create a new consultation object
                                               final consultation = Consultation(
                                                 id:
-                                                    DateTime.now()
-                                                        .millisecondsSinceEpoch
-                                                        .toString(),
+                                                    _isEditing
+                                                        ? _originalConsultationId!
+                                                        : DateTime.now()
+                                                            .millisecondsSinceEpoch
+                                                            .toString(),
                                                 description: description,
                                                 topic: topic,
                                                 date: _selectedDate,
                                                 time: _selectedTime,
                                                 lecturer: _selectedLecturer!,
                                                 studentId: studentId,
+                                                status: _consultationStatus,
                                               );
 
-                                              // Save the consultation to Firestore
-                                              await Provider.of<
+                                              final viewModel = Provider.of<
                                                 ConsultationViewModel
-                                              >(
-                                                context,
-                                                listen: false,
-                                              ).addConsultation(consultation);
+                                              >(context, listen: false);
 
-                                              // Show a success snack bar
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                    'Consultation added successfully!',
+                                              if (_isEditing) {
+                                                // Update existing consultation
+                                                await viewModel
+                                                    .updateConsultation(
+                                                      consultation,
+                                                    );
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Consultation updated successfully!',
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.green,
                                                   ),
-                                                  backgroundColor: Colors.green,
-                                                ),
-                                              );
+                                                );
+                                              } else {
+                                                // Add new consultation
+                                                await viewModel.addConsultation(
+                                                  consultation,
+                                                );
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Consultation added successfully!',
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  ),
+                                                );
+                                              }
 
                                               // Navigate back to the previous screen
                                               Navigator.pop(context);
@@ -357,9 +448,11 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
                                   ),
                                   elevation: 5,
                                 ),
-                                child: const Text(
-                                  'Save Consultation',
-                                  style: TextStyle(
+                                child: Text(
+                                  _isEditing
+                                      ? 'Update Consultation'
+                                      : 'Save Consultation',
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -391,5 +484,12 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
           _descController.text.isEmpty ||
           _selectedLecturer == null;
     });
+  }
+}
+
+// Extension to capitalize the first letter of a string
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }
