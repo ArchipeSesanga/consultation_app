@@ -33,7 +33,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
 
   // Status options (for the new requirement)
   String _consultationStatus = 'pending'; // Default status
-  final List<String> _statusOptions = ['pending', 'confirmed'];
+  final List<String> _statusOptions = ['pending'];
 
   final List<Lecturer> _lecturers = [
     Lecturer(

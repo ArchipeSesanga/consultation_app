@@ -223,14 +223,14 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
               // Button to go to admin registration page
-              TextButton(
+              /*TextButton(
                 onPressed:
                     () => Navigator.pushNamed(
                       context,
                       RouteManager.adminRegister,
                     ),
                 child: const Text('Register as Admin'),
-              ),
+              ),*/
             ],
           ),
         ),
