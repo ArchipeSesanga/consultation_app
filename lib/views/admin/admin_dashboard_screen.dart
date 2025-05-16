@@ -20,28 +20,16 @@ class AdminDashboard extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
+            tooltip: 'Log out',
             onPressed: () async {
-              final authService = Provider.of<AuthService>(
-                context,
-                listen: false,
-              );
-              await authService.signOut();
-              Navigator.pushReplacementNamed(context, RouteManager.authPage);
-            },
-          ),
-
-          /*IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              // Log out and navigate to login screen
               await Provider.of<AuthService>(context, listen: false).signOut();
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                '/auth-page', // Or RouteManager.authPage if you use RouteManager
+                RouteManager.authPage,
                 (route) => false,
               );
             },
-          )*/
+          ),
         ],
       ),
       drawer: Drawer(
@@ -58,18 +46,11 @@ class AdminDashboard extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.admin_panel_settings),
-              title: const Text('Register New Admin'),
-              onTap: () {
-                Navigator.pushNamed(context, RouteManager.adminRegister);
-              },
-            ),
-
-            ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Students'),
               onTap: () {
-                // TODO: Navigate to users list
+                // TODO: Navigate to students list screen
+                // Navigator.push(context, MaterialPageRoute(builder: (_) => const StudentsListScreen()));
               },
             ),
             ListTile(
@@ -86,7 +67,7 @@ class AdminDashboard extends StatelessWidget {
               leading: const Icon(Icons.settings),
               title: const Text('Settings'),
               onTap: () {
-                // TODO: Navigate to settings
+                // TODO: Navigate to settings screen
               },
             ),
           ],
@@ -96,7 +77,7 @@ class AdminDashboard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Text(
-            'Welcome, Admin!\n$email',
+            'Welcome ${email.isNotEmpty ? email.split('@').first : 'Admin'}',
             style: const TextStyle(fontSize: 24),
             textAlign: TextAlign.center,
           ),

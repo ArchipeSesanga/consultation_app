@@ -28,6 +28,30 @@ class AuthService {
     return null;
   }
 
+  // Register user with additional info
+  Future<User?> registerUserWithEmailAndPassword(
+    String email,
+    String password,
+    String name,
+  ) async {
+    try {
+      final cred = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Save user info in Firestore (optional, adjust collection as needed)
+      await FirebaseFirestore.instance.collection('students').doc(cred.user!.uid).set({
+        'email': email,
+        'name': name,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      return cred.user;
+    } catch (e) {
+      debugPrint("User registration error: $e");
+      rethrow;
+    }
+  }
+
   // Login user
   Future<User?> logUserWithEmailAndPassword(
     String email,
@@ -38,11 +62,19 @@ class AuthService {
         email: email,
         password: password,
       );
+      // Check if user is in students collection
+      final doc = await FirebaseFirestore.instance
+          .collection('students')
+          .doc(cred.user!.uid)
+          .get();
+      if (!doc.exists) {
+        throw Exception('You are not registered as a student.');
+      }
       return cred.user;
     } catch (e) {
       debugPrint("Login error: $e");
+      rethrow;
     }
-    return null;
   }
 
   // Admin login
@@ -51,43 +83,51 @@ class AuthService {
     String password,
   ) async {
     try {
-      // You may want to check if the user is an admin in Firestore here
       final cred = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // Optionally: check admin role in Firestore
+      // Check if user is in admins collection
+      final doc = await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(cred.user!.uid)
+          .get();
+      if (!doc.exists) {
+        throw Exception('You are not registered as an admin.');
+      }
       return cred.user;
     } catch (e) {
       debugPrint("Admin login error: $e");
+      rethrow;
     }
-    return null;
   }
 
   // Register admin
   Future<User?> createAdminWithEmailAndPassword(
     String email,
     String password,
+    String name, // <-- Add name parameter
   ) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // Save admin role in Firestore
+      // Save admin role and name in Firestore
       await FirebaseFirestore.instance
           .collection('admins')
           .doc(cred.user!.uid)
           .set({
             'email': email,
+            'name': name, // <-- Save name
             'role': 'admin',
             'createdAt': FieldValue.serverTimestamp(),
           });
       return cred.user;
     } catch (e) {
       debugPrint("Admin registration error: $e");
+      rethrow;
     }
-    return null;
   }
 
   // Sign out

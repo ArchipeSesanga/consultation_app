@@ -18,6 +18,7 @@ class _AdminRegisterScreenState extends State<AdminRegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController(); // Add name controller
   bool _isLoading = false;
 
   Future<void> _registerAdmin(BuildContext context) async {
@@ -29,6 +30,7 @@ class _AdminRegisterScreenState extends State<AdminRegisterScreen> {
       final user = await authService.createAdminWithEmailAndPassword(
         _emailController.text.trim(),
         _passwordController.text.trim(),
+        _nameController.text.trim(), // Pass name
       );
       if (user != null) {
         Navigator.pushReplacementNamed(
@@ -60,6 +62,14 @@ class _AdminRegisterScreenState extends State<AdminRegisterScreen> {
           key: _formKey,
           child: Column(
             children: [
+              // Full Name field
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Full Name'),
+                validator: (value) =>
+                    value!.isEmpty ? 'Enter your full name' : null,
+              ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),

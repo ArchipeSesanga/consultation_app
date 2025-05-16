@@ -80,43 +80,56 @@ class _AuthPageState extends State<AuthPage> {
       final authService = Provider.of<AuthService>(context, listen: false);
 
       if (widget.isLogin) {
-        // Save email if "Remember Me" is checked
-        await _saveRememberMe(rememberMe);
+      // Save email if "Remember Me" is checked
+      await _saveRememberMe(rememberMe);
 
-        if (isAdmin) {
-          // Admin login
-          await authService.logAdminWithEmailAndPassword(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          );
+      if (isAdmin) {
+        // Admin login
+        await authService.logAdminWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        );
 
-          // Navigate to admin dashboard, passing the email
-          Navigator.pushReplacementNamed(
-            context,
-            RouteManager.adminDashboard,
-            arguments: _emailController.text.trim(),
-          );
-        } else {
-          // Regular user login
-          await authService.logUserWithEmailAndPassword(
-            _emailController.text.trim(),
-            _passwordController.text.trim(),
-          );
+        // Navigate to admin dashboard, passing the email
+        Navigator.pushReplacementNamed(
+        context,
+        RouteManager.adminDashboard,
+        arguments: _emailController.text.trim(),
+        );
+      } else {
+        // Regular user login
+        await authService.logUserWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        );
 
-          // Navigate to home screen, passing the email
-          Navigator.pushReplacementNamed(
-            context,
-            RouteManager.homeScreen,
-            arguments: _emailController.text.trim(),
-          );
-        }
+        // Navigate to home screen, passing the email
+        Navigator.pushReplacementNamed(
+        context,
+        RouteManager.homeScreen,
+        arguments: _emailController.text.trim(),
+        );
       }
-      // Registration logic would go here if needed
+      } else {
+      // Registration logic for normal users/students
+      await authService.registerUserWithEmailAndPassword(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        _nameController.text.trim(),
+      );
+
+      // After successful registration, navigate to home screen
+      Navigator.pushReplacementNamed(
+        context,
+        RouteManager.homeScreen,
+        arguments: _emailController.text.trim(),
+      );
+      }
     } catch (e) {
       // Show error message if login/registration fails
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
     } finally {
       setState(() => _isLoading = false); // Hide loading
     }
