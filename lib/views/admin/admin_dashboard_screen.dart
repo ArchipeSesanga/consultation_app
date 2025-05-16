@@ -1,3 +1,115 @@
  /*
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
+
+import 'package:assignement_1_2025/models/student_registration.dart';
+import 'package:assignement_1_2025/routes/route_manager.dart';
+import 'package:assignement_1_2025/viewmodels/booking_view_model.dart';
+import 'package:assignement_1_2025/views/add_consultation_screen.dart';
+import 'package:assignement_1_2025/views/students/studentAcount.dart';
+
+import 'package:flutter/material.dart';
+import 'package:assignement_1_2025/services/auth_service.dart';
+import 'package:provider/provider.dart';
+
+class AdminDashboard extends StatelessWidget {
+  final String email;
+  const AdminDashboard({super.key, required this.email});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Log out',
+            onPressed: () async {
+              await Provider.of<AuthService>(context, listen: false).signOut();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                RouteManager.authPage,
+                (route) => false,
+              );
+            },
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 53, 159, 131),
+              ),
+              child: Text(
+                'Admin Menu',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Students'),
+              onTap: () {
+      Navigator.push(
+        context,
+        
+        MaterialPageRoute(builder: (context) => StudentsScreen()),
+      );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('Add Consultation'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddConsultationScreen()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.list),
+              title: const Text('Consultation List'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BookingScreen()),
+    );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.book_online_outlined),
+              title: const Text('Bookings'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => BookingScreen ()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {
+                // TODO: Navigate to settings screen
+              },
+            ),
+          ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(
+            'Welcome ${email.isNotEmpty ? email.split('@').first : 'Admin'}',
+            style: const TextStyle(fontSize: 24),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}

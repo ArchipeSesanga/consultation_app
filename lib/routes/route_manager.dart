@@ -48,7 +48,7 @@ class RouteManager {
           builder: (_) => const AuthPage(isLogin: false),
         );
 
-      case studentRegistration:
+      /*case studentRegistration:
         final args = settings.arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
           builder: (_) => RegisterScreen(
@@ -58,7 +58,7 @@ class RouteManager {
             initialContact: args?['initialContact'],
             onSubmit: args?['onSubmit'],
           ),
-        );
+        );*/
 
       case mainPage:
         final email = settings.arguments as String?;
