@@ -10,7 +10,7 @@ import '../models/lecturer.dart';
 
 class ConsultationViewModel with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String _collectionPath = 'consultations';
+  final String _collectionPath = 'bookings';
 
   // In-memory cache of consultations
   final List<Consultation> _consultations = [];

@@ -160,7 +160,30 @@ class _BookingsListScreenState extends State<BookingsListScreen> {
                           children: [
                             Text('Student ID: ${booking['studentId'] ?? 'N/A'}'),
                             Text('Lecturer: ${booking['lecturer'] ?? 'N/A'}'),
-                            Text('Status: ${booking['status'] ?? 'N/A'}'),
+                            // Status dropdown for admin
+                            Row(
+                              children: [
+                                const Text('Status: '),
+                                DropdownButton<String>(
+                                  value: (booking['status'] ?? 'pending'), // lowercase
+                                  items: const [
+                                    DropdownMenuItem(value: 'pending', child: Text('Pending')),
+                                    DropdownMenuItem(value: 'confirmed', child: Text('Confirmed')),
+                                  ],
+                                  onChanged: (newStatus) async {
+                                    if (newStatus != null && newStatus != booking['status']) {
+                                      await FirebaseFirestore.instance
+                                          .collection('bookings')
+                                          .doc(doc.id)
+                                          .update({'status': newStatus});
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Status updated to $newStatus')),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                             Text('Date & Time: $formattedDate'),
                             Text('Notes: ${booking['notes'] ?? ''}'),
                           ],
