@@ -37,6 +37,11 @@ class _AuthPageState extends State<AuthPage> {
   void initState() {
     super.initState();
     _loadSavedEmail(); // Load saved email if "Remember Me" was checked
+
+    _emailController.addListener(_SetDisabled); // Listen for changes in email
+    _passwordController.addListener(
+      _SetDisabled,
+    ); // Listen for changes in password
   }
 
   // Loads saved email from local storage if "Remember Me" was checked
@@ -49,6 +54,7 @@ class _AuthPageState extends State<AuthPage> {
       _emailController.text = savedEmail;
       rememberMe = true;
       setState(() {});
+      _SetDisabled();
     }
   }
 
@@ -177,7 +183,10 @@ class _AuthPageState extends State<AuthPage> {
                 child: Opacity(
                   opacity: _disabled ? 0.5 : 1.0,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : () => _submit(context),
+                    onPressed:
+                        (_isLoading || _disabled)
+                            ? null
+                            : () => _submit(context),
                     child:
                         _isLoading
                             ? const CircularProgressIndicator()
@@ -218,8 +227,9 @@ class _AuthPageState extends State<AuthPage> {
 
   void _SetDisabled() {
     setState(() {
-      // Enable the button only if topic is not empty, description is not empty, and lecturer is selected
-      _disabled = _emailController.text.isEmpty || _passwordController == null;
+      _disabled =
+          _emailController.text.trim().isEmpty ||
+          _passwordController.text.trim().isEmpty;
     });
   }
 }

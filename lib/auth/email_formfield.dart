@@ -1,4 +1,4 @@
- /*
+/*
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 import 'package:flutter/material.dart';
@@ -12,13 +12,10 @@ class EmailFormField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       keyboardType: TextInputType.emailAddress,
-      decoration: const InputDecoration(
-        labelText: 'Email',
-      
-      ),
+      decoration: const InputDecoration(labelText: 'Email'),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Email is required';
-        
+
         return null;
       },
     );
