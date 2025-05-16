@@ -25,8 +25,7 @@ class AdminDashboard extends StatelessWidget {
                 context,
                 listen: false,
               );
-              await authService
-                  .signOut(); // <-- implement this in your AuthService
+              await authService.signOut();
               Navigator.pushReplacementNamed(context, RouteManager.authPage);
             },
           ),
@@ -58,6 +57,14 @@ class AdminDashboard extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
+            ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('Register New Admin'),
+              onTap: () {
+                Navigator.pushNamed(context, RouteManager.adminRegister);
+              },
+            ),
+
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Students'),
