@@ -1,4 +1,4 @@
- /*
+/*
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 import 'package:flutter/material.dart';
@@ -12,10 +12,7 @@ class PasswordFormField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: true,
-      decoration: const InputDecoration(
-        labelText: 'Password',
-      
-      ),
+      decoration: const InputDecoration(labelText: 'Password'),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Password is required';
         if (value.length < 8) return 'Minimum 8 characters';
@@ -25,6 +22,7 @@ class PasswordFormField extends StatelessWidget {
     );
   }
 }
+
 // // This widget is a custom password input field for a form. It uses a TextFormField to accept user input and validate the password.
 // // The validator checks if the password is empty, if it is at least 8 characters long, and if it contains an '@' symbol.
 // // The field also includes an icon for better user experience.

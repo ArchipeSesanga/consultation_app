@@ -1,13 +1,9 @@
- /*
+/*
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
-import 'package:assignement_1_2025/models/student_registration.dart';
 import 'package:assignement_1_2025/routes/route_manager.dart';
-import 'package:assignement_1_2025/viewmodels/booking_view_model.dart';
-import 'package:assignement_1_2025/views/add_consultation_screen.dart';
-import 'package:assignement_1_2025/views/students/studentAcount.dart';
-
+import 'package:assignement_1_2025/views/admin/bookings_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:provider/provider.dart';
@@ -53,31 +49,8 @@ class AdminDashboard extends StatelessWidget {
               leading: const Icon(Icons.person),
               title: const Text('Students'),
               onTap: () {
-      Navigator.push(
-        context,
-        
-        MaterialPageRoute(builder: (context) => StudentsScreen()),
-      );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text('Add Consultation'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const AddConsultationScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.list),
-              title: const Text('Consultation List'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const BookingScreen()),
-    );
+                // TODO: Navigate to students list screen
+                // Navigator.push(context, MaterialPageRoute(builder: (_) => const StudentsListScreen()));
               },
             ),
             ListTile(
@@ -86,7 +59,7 @@ class AdminDashboard extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => BookingScreen ()),
+                  MaterialPageRoute(builder: (_) => const BookingsListScreen()),
                 );
               },
             ),

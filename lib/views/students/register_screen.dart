@@ -1,5 +1,5 @@
- 
-/*Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
+ /*
+Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075  221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane 
 import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _contactController = TextEditingController();
-
   bool isFormValid = false;
   bool isLoading = false;
 
@@ -135,31 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                 ),
                 const SizedBox(height: 20),
-  ElevatedButton(
-    onPressed: isFormValid
-    ? () async {
-        if (_formKey.currentState!.validate()) {
-          final error = await _auth.register(
-            _emailController.text.trim(),
-            _passwordController.text.trim(), email: '',
-          );
-
-          if (error == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Registration successful')),
-            );
-            Navigator.pop(context);
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(error)),
-            );
-          }
-        }
-      }
-    : null,
-
-    child: Text(widget.studentId == null ? 'Register' : 'Update'),
-  ),
+  // Removed erroneous ElevatedButton using _auth.register (method not defined)
                 ElevatedButton(
                   onPressed: isFormValid && !isLoading ? _handleSubmit : null,
                   child: isLoading
@@ -173,8 +148,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-}*/
-
+}
+*/
   
           
               
