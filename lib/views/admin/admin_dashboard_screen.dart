@@ -54,6 +54,13 @@ class AdminDashboard extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('Register New Admin'),
+              onTap: () {
+                Navigator.pushNamed(context, RouteManager.adminRegister);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.book_online_outlined),
               title: const Text('Bookings'),
               onTap: () {
