@@ -74,6 +74,8 @@ class ConsultationViewModel with ChangeNotifier {
           .doc(consultation.id)
           .update(consultation.toMap());
 
+      // Reload all consultations to refresh local cache
+      await loadConsultations();
       // Update in local cache
       final index = _consultations.indexWhere((c) => c.id == consultation.id);
       if (index != -1) {

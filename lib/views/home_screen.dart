@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refreshData() async {
     await Provider.of<ConsultationViewModel>(
       context,
-      listen: false,
+      listen: true,
     ).loadConsultations();
   }
 
