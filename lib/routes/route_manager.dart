@@ -6,7 +6,6 @@ import 'package:assignement_1_2025/auth/auth_page.dart';
 import 'package:assignement_1_2025/models/consultation.dart';
 import 'package:assignement_1_2025/views/admin/admin_dashboard_screen.dart';
 import 'package:assignement_1_2025/views/admin/admin_register_screen.dart';
-import "package:assignement_1_2025/views/students/register_screen.dart";
 import 'package:flutter/material.dart';
 import '../views/add_consultation_screen.dart';
 import '../views/consultation_details_screen.dart';

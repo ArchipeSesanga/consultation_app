@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import '../models/consultation.dart';
-import '../models/lecturer.dart';
 
 class ConsultationViewModel with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -23,27 +22,8 @@ class ConsultationViewModel with ChangeNotifier {
 
   // Load consultations from Firestore
   Future<void> loadConsultations() async {
-    try {
-      // Clear the existing list
-      _consultations.clear();
-
-      // Get consultations from Firestore, ordered by date (newest first)
-      final QuerySnapshot snapshot =
-          await _firestore
-              .collection(_collectionPath)
-              .orderBy('date', descending: true)
-              .get();
-
-      // Convert each document to a Consultation object
-      for (var doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
-        _consultations.add(Consultation.fromMap(data));
-      }
-
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading consultations: $e');
-    }
+    // Fetch consultations from Firestore for the current student
+    // and update the `consultations` list, then notifyListeners();
   }
 
   // Add a new consultation to Firestore

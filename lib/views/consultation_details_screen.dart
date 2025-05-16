@@ -13,8 +13,7 @@ import '../models/consultation.dart';
 class ConsultationDetailsScreen extends StatelessWidget {
   final Consultation consultation;
 
-  const ConsultationDetailsScreen({Key? key, required this.consultation})
-    : super(key: key);
+  const ConsultationDetailsScreen({super.key, required this.consultation});
 
   @override
   Widget build(BuildContext context) {
