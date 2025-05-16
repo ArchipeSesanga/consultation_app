@@ -28,6 +28,7 @@ class _AuthPageState extends State<AuthPage> {
   final _nameController = TextEditingController();
 
   // State variables
+  bool _disabled = true; //button disabled by default
   bool _isLoading = false; // Shows loading indicator during async actions
   bool rememberMe = false; // For "Remember Me" checkbox
   bool isAdmin = false; // For "Login as Admin" checkbox
@@ -171,12 +172,18 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               const SizedBox(height: 24),
               // Login/Register button
-              ElevatedButton(
-                onPressed: _isLoading ? null : () => _submit(context),
-                child:
-                    _isLoading
-                        ? const CircularProgressIndicator()
-                        : Text(widget.isLogin ? 'Login' : 'Register'),
+              IgnorePointer(
+                ignoring: _disabled,
+                child: Opacity(
+                  opacity: _disabled ? 0.5 : 1.0,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : () => _submit(context),
+                    child:
+                        _isLoading
+                            ? const CircularProgressIndicator()
+                            : Text(widget.isLogin ? 'Login' : 'Register'),
+                  ),
+                ),
               ),
               // Switch between login and registration
               TextButton(
@@ -207,5 +214,12 @@ class _AuthPageState extends State<AuthPage> {
         ),
       ),
     );
+  }
+
+  void _SetDisabled() {
+    setState(() {
+      // Enable the button only if topic is not empty, description is not empty, and lecturer is selected
+      _disabled = _emailController.text.isEmpty || _passwordController == null;
+    });
   }
 }
