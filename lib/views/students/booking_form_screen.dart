@@ -2,7 +2,7 @@
 Student Numbers: 221003314,  221049485, 222052243  ,  220014909, 221032075    221005490
 Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.P Vilane */
 
-
+// this file is for the booking screen where students can book a consultation with a lecturer
 import 'package:assignement_1_2025/models/booking.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
