@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
+
+/// Admin dashboard screen
+/// This screen serves as the main interface for admin users.
 class AdminDashboard extends StatelessWidget {
   final String email;
   const AdminDashboard({super.key, required this.email});
@@ -45,12 +48,20 @@ class AdminDashboard extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
+             // TODO: Navigate to students list screen
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Students'),
               onTap: () {
-                // TODO: Navigate to students list screen
-                // Navigator.push(context, MaterialPageRoute(builder: (_) => const StudentsListScreen()));
+               
+                Navigator.pushNamed(context, RouteManager.studentAccount);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('Register New Admin'),
+              onTap: () {
+                Navigator.pushNamed(context, RouteManager.adminRegister);
               },
             ),
             ListTile(

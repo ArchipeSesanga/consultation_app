@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
 import '../../routes/route_manager.dart';
 
+/// Admin registration screen
+/// This screen allows an admin to register by providing their full name, email, and password.
+
 class AdminRegisterScreen extends StatefulWidget {
   const AdminRegisterScreen({super.key});
 

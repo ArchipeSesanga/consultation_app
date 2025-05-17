@@ -17,7 +17,7 @@ class Student {
     required this.email,
     required this.password,
     required this.contactNumber,
-    required this.createdAt,
+    required this.createdAt, required String contact, required Null Function(String studentId, String email, String password, String contact) onSubmit,
   });
 
  
