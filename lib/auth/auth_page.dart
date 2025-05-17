@@ -11,9 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'email_formfield.dart';
 import 'password_formfield.dart';
 
-// The main authentication page, used for both login and registration
 class AuthPage extends StatefulWidget {
-  final bool isLogin; // Determines if the page is for login or registration
+  final bool isLogin;
+
   const AuthPage({super.key, required this.isLogin});
 
   @override
@@ -21,30 +21,33 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  // Form and controllers for user input
+  // Form key
   final _formKey = GlobalKey<FormState>();
+
+  // Controllers for user input
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
+  final _studentIdController = TextEditingController();
+  final _contactController = TextEditingController();
 
   // State variables
-  bool _disabled = true; //button disabled by default
-  bool _isLoading = false; // Shows loading indicator during async actions
-  bool rememberMe = false; // For "Remember Me" checkbox
-  bool isAdmin = false; // For "Login as Admin" checkbox
+  bool _disabled = true;
+  bool _isLoading = false;
+  bool rememberMe = false;
+  bool isAdmin = false;
 
   @override
   void initState() {
     super.initState();
-    _loadSavedEmail(); // Load saved email if "Remember Me" was checked
+    _loadSavedEmail();
 
-    _emailController.addListener(_SetDisabled); // Listen for changes in email
-    _passwordController.addListener(
-      _SetDisabled,
-    ); // Listen for changes in password
+    // Listen for changes in email & password fields to enable/disable button
+    _emailController.addListener(_setDisabled);
+    _passwordController.addListener(_setDisabled);
   }
 
-  // Loads saved email from local storage if "Remember Me" was checked
+  // Load saved email if "Remember Me" was checked before
   Future<void> _loadSavedEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('savedEmail') ?? '';
@@ -54,11 +57,11 @@ class _AuthPageState extends State<AuthPage> {
       _emailController.text = savedEmail;
       rememberMe = true;
       setState(() {});
-      _SetDisabled();
+      _setDisabled();
     }
   }
 
-  // Saves or removes the email in local storage based on "Remember Me"
+  // Save or remove saved email based on Remember Me checkbox
   Future<void> _saveRememberMe(bool remember) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('rememberMe', remember);
@@ -70,69 +73,72 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
-  // Handles login or registration when the form is submitted
+  // Handle login or registration
   Future<void> _submit(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) return; // Validate form
+    if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true); // Show loading
+    setState(() => _isLoading = true);
 
     try {
       final authService = Provider.of<AuthService>(context, listen: false);
 
       if (widget.isLogin) {
-      // Save email if "Remember Me" is checked
-      await _saveRememberMe(rememberMe);
+        // Save Remember Me state
+        await _saveRememberMe(rememberMe);
 
-      if (isAdmin) {
-        // Admin login
-        await authService.logAdminWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-        );
-
-        // Navigate to admin dashboard, passing the email
-        Navigator.pushReplacementNamed(
-        context,
-        RouteManager.adminDashboard,
-        arguments: _emailController.text.trim(),
-        );
+        if (isAdmin) {
+          // Admin login
+          await authService.logAdminWithEmailAndPassword(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+          );
+          Navigator.pushReplacementNamed(
+            context,
+            RouteManager.adminDashboard,
+            arguments: _emailController.text.trim(),
+          );
+        } else {
+          // Regular user login
+          await authService.logUserWithEmailAndPassword(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+          );
+          Navigator.pushReplacementNamed(
+            context,
+            RouteManager.homeScreen,
+            arguments: _emailController.text.trim(),
+          );
+        }
       } else {
-        // Regular user login
-        await authService.logUserWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
+        // Registration logic
+        await authService.registerUserWithEmailAndPassword(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+          _nameController.text.trim(),
+          
         );
 
-        // Navigate to home screen, passing the email
         Navigator.pushReplacementNamed(
-        context,
-        RouteManager.homeScreen,
-        arguments: _emailController.text.trim(),
+          context,
+          RouteManager.homeScreen,
+          arguments: _emailController.text.trim(),
         );
-      }
-      } else {
-      // Registration logic for normal users/students
-      await authService.registerUserWithEmailAndPassword(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-        _nameController.text.trim(),
-      );
-
-      // After successful registration, navigate to home screen
-      Navigator.pushReplacementNamed(
-        context,
-        RouteManager.homeScreen,
-        arguments: _emailController.text.trim(),
-      );
       }
     } catch (e) {
-      // Show error message if login/registration fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
     } finally {
-      setState(() => _isLoading = false); // Hide loading
+      setState(() => _isLoading = false);
     }
+  }
+
+  // Disable/enable login/register button
+  void _setDisabled() {
+    setState(() {
+      _disabled = _emailController.text.trim().isEmpty ||
+          _passwordController.text.trim().isEmpty;
+    });
   }
 
   @override
@@ -146,103 +152,114 @@ class _AuthPageState extends State<AuthPage> {
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              // Show name field only on registration
-              if (!widget.isLogin)
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Show these fields only on Register screen
+                if (!widget.isLogin) ...[
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Full Name'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Required field' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _studentIdController,
+                    decoration: const InputDecoration(labelText: 'Student ID'),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _contactController,
+                    decoration:
+                        const InputDecoration(labelText: 'Contact Number'),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                // Email input
                 TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Full Name'),
-                  validator:
-                      (value) => value!.isEmpty ? 'Required field' : null,
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Email is required' : null,
                 ),
-              const SizedBox(height: 16),
-              // Email input
-              EmailFormField(controller: _emailController),
-              const SizedBox(height: 16),
-              // Password input
-              PasswordFormField(controller: _passwordController),
-              const SizedBox(height: 16),
-              // Show checkboxes only on login
-              if (widget.isLogin)
-                Row(
-                  children: [
-                    // "Remember Me" checkbox
-                    Checkbox(
-                      value: rememberMe,
-                      onChanged: (value) {
-                        setState(() {
-                          rememberMe = value!;
-                        });
-                      },
-                    ),
-                    const Text('Remember Me'),
-                    // "Login as Admin" checkbox
-                    Checkbox(
-                      value: isAdmin,
-                      onChanged: (value) {
-                        setState(() {
-                          isAdmin = value!;
-                        });
-                      },
-                    ),
-                    const Text('Login as Admin'),
-                  ],
+                const SizedBox(height: 16),
+
+                // Password input
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Password is required' : null,
                 ),
-              const SizedBox(height: 24),
-              // Login/Register button
-              IgnorePointer(
-                ignoring: _disabled,
-                child: Opacity(
-                  opacity: _disabled ? 0.5 : 1.0,
-                  child: ElevatedButton(
-                    onPressed:
-                        (_isLoading || _disabled)
-                            ? null
-                            : () => _submit(context),
-                    child:
-                        _isLoading
-                            ? const CircularProgressIndicator()
-                            : Text(widget.isLogin ? 'Login' : 'Register'),
+                const SizedBox(height: 16),
+
+                // Checkboxes for Remember Me & Login as Admin (only on Login screen)
+                if (widget.isLogin)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            rememberMe = value!;
+                          });
+                        },
+                      ),
+                      const Text('Remember Me'),
+                      Checkbox(
+                        value: isAdmin,
+                        onChanged: (value) {
+                          setState(() {
+                            isAdmin = value!;
+                          });
+                        },
+                      ),
+                      const Text('Login as Admin'),
+                    ],
+                  ),
+
+                const SizedBox(height: 24),
+
+                // Login/Register button
+                IgnorePointer(
+                  ignoring: _disabled,
+                  child: Opacity(
+                    opacity: _disabled ? 0.5 : 1.0,
+                    child: ElevatedButton(
+                      onPressed: (_isLoading || _disabled)
+                          ? null
+                          : () => _submit(context),
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : Text(widget.isLogin ? 'Login' : 'Register'),
+                    ),
                   ),
                 ),
-              ),
-              // Switch between login and registration
-              TextButton(
-                onPressed:
-                    () => Navigator.pushReplacementNamed(
-                      context,
-                      widget.isLogin
-                          ? RouteManager.registrationPage
-                          : RouteManager.authPage,
-                    ),
-                child: Text(
-                  widget.isLogin
+
+                // Switch between Login/Register
+                TextButton(
+                  onPressed: () => Navigator.pushReplacementNamed(
+                    context,
+                    widget.isLogin
+                        ? RouteManager.registrationPage
+                        : RouteManager.authPage,
+                  ),
+                  child: Text(widget.isLogin
                       ? 'Create an account'
-                      : 'Already have an account?',
+                      : 'Already have an account?'),
                 ),
-              ),
-              // Button to go to admin registration page
-              /*TextButton(
-                onPressed:
-                    () => Navigator.pushNamed(
-                      context,
-                      RouteManager.adminRegister,
-                    ),
-                child: const Text('Register as Admin'),
-              ),*/
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
-  }
-
-  void _SetDisabled() {
-    setState(() {
-      _disabled =
-          _emailController.text.trim().isEmpty ||
-          _passwordController.text.trim().isEmpty;
-    });
   }
 }

@@ -9,7 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // and allow the admin to edit or delete their details
 
 class StudentsScreen extends StatelessWidget {
-  const StudentsScreen({Key? key}) : super(key: key);
+  const StudentsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
