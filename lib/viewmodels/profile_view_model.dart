@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 class ProfileViewModel with ChangeNotifier {
-  ProfileData _profileData = ProfileData(
+  final ProfileData _profileData = ProfileData(
     name: '',
     role: '',
     email: '',

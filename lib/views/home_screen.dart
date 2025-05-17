@@ -13,7 +13,7 @@ import '../models/consultation.dart';
 
 class HomeScreen extends StatefulWidget {
   final String email;
-  const HomeScreen({Key? key, required this.email}) : super(key: key);
+  const HomeScreen({super.key, required this.email});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,6 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       listen: true,
     ).loadConsultations();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Load consultations when the screen is first shown
+    Future.microtask(() {
+      Provider.of<ConsultationViewModel>(context, listen: false).loadConsultations();
+    });
   }
 
   @override
@@ -83,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('lib/assets/images/bodyBackground.png'),
+            image: AssetImage('assets/images/bodyBackground.png'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.4),
@@ -219,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                       ),
                                     );
-                                  }).toList(),
+                                  }),
                                 ],
                               );
                             },
