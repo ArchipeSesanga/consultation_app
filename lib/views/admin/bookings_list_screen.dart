@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+// This screen displays a list of bookings and allows the admin to filter, delete, and update booking statuses.
+// It uses Firestore to fetch booking data and provides a user-friendly interface for managing bookings.
+
 class BookingsListScreen extends StatefulWidget {
   const BookingsListScreen({super.key});
 
