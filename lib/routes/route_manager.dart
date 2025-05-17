@@ -4,18 +4,14 @@ Student Names:   AM Sesanga, BD Davis,  E.B Phungula, T.E Sello, Mutlana K.P  S.
 
 import 'package:assignement_1_2025/auth/auth_page.dart';
 import 'package:assignement_1_2025/models/consultation.dart';
-import 'package:assignement_1_2025/models/student.dart';
-import 'package:assignement_1_2025/models/student_registration.dart';
 import 'package:assignement_1_2025/views/admin/admin_dashboard_screen.dart';
 import 'package:assignement_1_2025/views/admin/admin_register_screen.dart';
-import "package:assignement_1_2025/views/students/register_screen.dart";
 import 'package:assignement_1_2025/views/students/studentAcount.dart';
 import 'package:flutter/material.dart';
 import '../views/add_consultation_screen.dart';
 import '../views/consultation_details_screen.dart';
 import '../views/home_screen.dart';
 import '../views/profile_page_screen.dart';
-import '../views/students/studentAcount.dart';
 
 class RouteManager {
   // Route names
@@ -64,7 +60,10 @@ class RouteManager {
         );
 
       case studentAccount:
-        return MaterialPageRoute(builder: (_) => const StudentsScreen());
+        return MaterialPageRoute(
+          builder: (_) => const StudentsScreen(),
+        );
+        
 
       case mainPage:
         final email = settings.arguments as String?;
@@ -87,3 +86,4 @@ class RouteManager {
     }
   }
 }
+
