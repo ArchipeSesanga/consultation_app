@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
-
 /// Admin dashboard screen
 /// This screen serves as the main interface for admin users.
 class AdminDashboard extends StatelessWidget {
@@ -20,6 +19,7 @@ class AdminDashboard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
+        //action to log out
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -48,12 +48,11 @@ class AdminDashboard extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-             // TODO: Navigate to students list screen
+            // TODO: Navigate to students list screen
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Students'),
               onTap: () {
-               
                 Navigator.pushNamed(context, RouteManager.studentAccount);
               },
             ),

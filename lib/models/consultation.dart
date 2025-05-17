@@ -41,6 +41,8 @@ class Consultation {
     };
   }
 
+  /// Factory constructor to create a Consultation object from a Firestore document
+  /// This is useful when retrieving data from Firestore.
   factory Consultation.fromMap(Map<String, dynamic> map) {
     return Consultation(
       id: map['id'],

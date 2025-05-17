@@ -33,7 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     // Load consultations when the screen is first shown
     Future.microtask(() {
-      Provider.of<ConsultationViewModel>(context, listen: false).loadConsultations();
+      Provider.of<ConsultationViewModel>(
+        context,
+        listen: false,
+      ).loadConsultations();
     });
   }
 
@@ -63,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         backgroundColor: const Color(0xFF205759),
         elevation: 2,
+        // Action button to log out
         leading: IconButton(
           icon: const Icon(Icons.logout),
           onPressed: () async {
@@ -91,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       body: Container(
         decoration: BoxDecoration(
+          // Background image with dark overlay
           image: DecorationImage(
             image: AssetImage('assets/images/bodyBackground.png'),
             fit: BoxFit.cover,
@@ -126,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 20),
 
               Expanded(
+                //the text widget is used to display the message when there are no consultations
                 child:
                     consultations.isEmpty
                         ? const Center(
@@ -239,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      // Floating action button to add a new consultation
       floatingActionButton: FloatingActionButton(
         onPressed:
             () => Navigator.pushNamed(
@@ -270,6 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Format the date header based on the current date
   String _formatDateHeader(String dateStr) {
     final date = DateFormat('yyyy-MM-dd').parse(dateStr);
     final now = DateTime.now();

@@ -35,6 +35,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   String _consultationStatus = 'pending'; // Default status
   final List<String> _statusOptions = ['pending'];
 
+  // List of lecturers that can be selected
   final List<Lecturer> _lecturers = [
     Lecturer(
       id: '1',
@@ -71,6 +72,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   Lecturer? _selectedLecturer;
 
   @override
+  // Initialize the selected lecturer
   void initState() {
     super.initState();
 
@@ -470,6 +472,7 @@ class _AddConsultationScreenState extends State<AddConsultationScreen> {
   }
 
   @override
+  // Dispose the controllers
   void dispose() {
     _descController.dispose();
     _topicController.dispose();

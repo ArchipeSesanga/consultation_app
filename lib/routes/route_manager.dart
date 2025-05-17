@@ -60,10 +60,7 @@ class RouteManager {
         );
 
       case studentAccount:
-        return MaterialPageRoute(
-          builder: (_) => const StudentsScreen(),
-        );
-        
+        return MaterialPageRoute(builder: (_) => const StudentsScreen());
 
       case mainPage:
         final email = settings.arguments as String?;
@@ -86,4 +83,3 @@ class RouteManager {
     }
   }
 }
-
