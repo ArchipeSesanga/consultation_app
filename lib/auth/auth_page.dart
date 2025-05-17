@@ -11,8 +11,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'email_formfield.dart';
 import 'password_formfield.dart';
 
+
+
+// The main authentication page, responsible for both Login and Registration screens
 class AuthPage extends StatefulWidget {
-  final bool isLogin;
+  final bool isLogin; // Determines if this page is for Login (true) or Register (false)
 
   const AuthPage({super.key, required this.isLogin});
 
@@ -21,38 +24,39 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  // Form key
+  // Form key to manage form validation and submission state
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers for user input
+  // Text editing controllers for each form input field
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
   final _studentIdController = TextEditingController();
   final _contactController = TextEditingController();
 
-  // State variables
-  bool _disabled = true;
-  bool _isLoading = false;
-  bool rememberMe = false;
-  bool isAdmin = false;
+  // State variables for form interactivity
+  bool _disabled = true; // Disable the login/register button by default
+  bool _isLoading = false; // Controls loading spinner during async operations
+  bool rememberMe = false; // State for 'Remember Me' checkbox
+  bool isAdmin = false; // State for 'Login as Admin' checkbox
 
   @override
   void initState() {
     super.initState();
-    _loadSavedEmail();
+    _loadSavedEmail(); // Load saved email if Remember Me was enabled previously
 
-    // Listen for changes in email & password fields to enable/disable button
+    // Attach listeners to email and password fields to enable/disable button dynamically
     _emailController.addListener(_setDisabled);
     _passwordController.addListener(_setDisabled);
   }
 
-  // Load saved email if "Remember Me" was checked before
+  // Loads previously saved email and rememberMe preference from local storage
   Future<void> _loadSavedEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('savedEmail') ?? '';
     final remember = prefs.getBool('rememberMe') ?? false;
 
+    // If Remember Me was enabled, pre-fill email and checkbox state
     if (remember) {
       _emailController.text = savedEmail;
       rememberMe = true;
@@ -61,7 +65,7 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
-  // Save or remove saved email based on Remember Me checkbox
+  // Saves or removes email in local storage based on Remember Me checkbox state
   Future<void> _saveRememberMe(bool remember) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('rememberMe', remember);
@@ -73,36 +77,43 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
-  // Handle login or registration
+  // Handles login or registration process when form is submitted
   Future<void> _submit(BuildContext context) async {
+    // First, check if the form is valid
     if (!_formKey.currentState!.validate()) return;
 
+    // Show loading indicator during asynchronous call
     setState(() => _isLoading = true);
 
     try {
+      // Access AuthService using Provider package
       final authService = Provider.of<AuthService>(context, listen: false);
 
       if (widget.isLogin) {
-        // Save Remember Me state
+        // If 'Remember Me' is checked, save email
         await _saveRememberMe(rememberMe);
 
         if (isAdmin) {
-          // Admin login
+          // Admin login attempt
           await authService.logAdminWithEmailAndPassword(
             _emailController.text.trim(),
             _passwordController.text.trim(),
           );
+
+          // Redirect to admin dashboard if successful
           Navigator.pushReplacementNamed(
             context,
             RouteManager.adminDashboard,
             arguments: _emailController.text.trim(),
           );
         } else {
-          // Regular user login
+          // Regular student login
           await authService.logUserWithEmailAndPassword(
             _emailController.text.trim(),
             _passwordController.text.trim(),
           );
+
+          // Redirect to home screen if successful
           Navigator.pushReplacementNamed(
             context,
             RouteManager.homeScreen,
@@ -110,14 +121,15 @@ class _AuthPageState extends State<AuthPage> {
           );
         }
       } else {
-        // Registration logic
+        // Registration logic for new users
         await authService.registerUserWithEmailAndPassword(
           _emailController.text.trim(),
           _passwordController.text.trim(),
           _nameController.text.trim(),
-          
+         
         );
 
+        // Redirect to home screen after successful registration
         Navigator.pushReplacementNamed(
           context,
           RouteManager.homeScreen,
@@ -125,15 +137,17 @@ class _AuthPageState extends State<AuthPage> {
         );
       }
     } catch (e) {
+      // Catch any error and display it via a SnackBar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
       );
     } finally {
+      // Hide loading indicator once done
       setState(() => _isLoading = false);
     }
   }
 
-  // Disable/enable login/register button
+  // Checks if email and password fields are both non-empty to enable/disable submit button
   void _setDisabled() {
     setState(() {
       _disabled = _emailController.text.trim().isEmpty ||
@@ -145,43 +159,44 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false, // Hide back button on AppBar
         title: Text(widget.isLogin ? 'Login' : 'Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
-          key: _formKey,
+          key: _formKey, // Assign form key for validation control
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Show these fields only on Register screen
+                // Only show Name, Student ID and Contact fields during registration
                 if (!widget.isLogin) ...[
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(labelText: 'Full Name'),
                     validator: (value) =>
-                        value!.isEmpty ? 'Required field' : null,
+                        value!.isEmpty ? 'Full name is required' : null,
                   ),
                   const SizedBox(height: 16),
+
                   TextFormField(
                     controller: _studentIdController,
                     decoration: const InputDecoration(labelText: 'Student ID'),
                     validator: (value) =>
-                        value == null || value.isEmpty ? 'Required' : null,
+                        value == null || value.isEmpty ? 'Student ID is required' : null,
                   ),
                   const SizedBox(height: 16),
+
                   TextFormField(
                     controller: _contactController,
-                    decoration:
-                        const InputDecoration(labelText: 'Contact Number'),
+                    decoration: const InputDecoration(labelText: 'Contact Number'),
                     validator: (value) =>
-                        value == null || value.isEmpty ? 'Required' : null,
+                        value == null || value.isEmpty ? 'Contact number is required' : null,
                   ),
                   const SizedBox(height: 16),
                 ],
 
-                // Email input
+                // Email input (always visible)
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(labelText: 'Email'),
@@ -190,17 +205,17 @@ class _AuthPageState extends State<AuthPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password input
+                // Password input (always visible)
                 TextFormField(
                   controller: _passwordController,
-                  obscureText: true,
+                  obscureText: true, // Hide text as user types
                   decoration: const InputDecoration(labelText: 'Password'),
                   validator: (value) =>
                       value!.isEmpty ? 'Password is required' : null,
                 ),
                 const SizedBox(height: 16),
 
-                // Checkboxes for Remember Me & Login as Admin (only on Login screen)
+                // Show 'Remember Me' and 'Login as Admin' checkboxes only on login page
                 if (widget.isLogin)
                   Row(
                     children: [
@@ -227,7 +242,7 @@ class _AuthPageState extends State<AuthPage> {
 
                 const SizedBox(height: 24),
 
-                // Login/Register button
+                // Login/Register button with disabled state and loading indicator
                 IgnorePointer(
                   ignoring: _disabled,
                   child: Opacity(
@@ -243,7 +258,7 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                 ),
 
-                // Switch between Login/Register
+                // Link to switch between Login and Register pages
                 TextButton(
                   onPressed: () => Navigator.pushReplacementNamed(
                     context,
