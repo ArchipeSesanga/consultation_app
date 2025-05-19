@@ -106,7 +106,7 @@ class AuthService {
   Future<User?> createAdminWithEmailAndPassword(
     String email,
     String password,
-    String name, // <-- Add name parameter
+    String name, 
   ) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
@@ -119,7 +119,7 @@ class AuthService {
           .doc(cred.user!.uid)
           .set({
             'email': email,
-            'name': name, // <-- Save name
+            'name': name, 
             'role': 'admin',
             'createdAt': FieldValue.serverTimestamp(),
           });

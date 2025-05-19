@@ -7,7 +7,6 @@ import 'package:assignement_1_2025/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'email_formfield.dart';
 import 'password_formfield.dart';
 
@@ -16,7 +15,6 @@ import 'password_formfield.dart';
 // The main authentication page, responsible for both Login and Registration screens
 class AuthPage extends StatefulWidget {
   final bool isLogin; // Determines if this page is for Login (true) or Register (false)
-
   const AuthPage({super.key, required this.isLogin});
 
   @override
